@@ -13,11 +13,15 @@ class ImageService
 
     public function __construct()
     {
-        $this->manager = new ImageManager(new Driver());
+        // Manager instantiation is delayed to store() to prevent errors on module entry
     }
 
     public function store(UploadedFile $file, string $path, ?int $width = null, ?int $height = null): string
     {
+        if (!$this->manager) {
+            $this->manager = new ImageManager(new Driver());
+        }
+
         $image = $this->manager->read($file);
 
         if ($width || $height) {
