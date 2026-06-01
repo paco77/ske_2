@@ -18,7 +18,7 @@ export default function HeroSlider({ sliders }) {
     const prevSlide = () => setCurrent((prev) => (prev === 0 ? sliders.length - 1 : prev - 1));
 
     return (
-        <section id="inicio" className="relative h-screen w-full overflow-hidden bg-gray-900">
+        <section id="inicio" className="relative min-h-[350px] h-[50vh] md:h-[80vh] lg:h-screen w-full overflow-hidden bg-gray-900">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={current}
