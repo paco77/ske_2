@@ -29,7 +29,7 @@ export default function HeroSlider({ sliders }) {
                     className="absolute inset-0"
                 >
                     <div
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                        className="absolute inset-0 bg-center bg-no-repeat bg-[size:100%_100%]"
                         style={{
                             backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(${window.storageUrl}${sliders[current].image})`,
                         }}

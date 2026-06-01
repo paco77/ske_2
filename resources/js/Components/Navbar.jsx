@@ -29,7 +29,7 @@ export default function Navbar() {
         >
             <div className="container mx-auto px-6 flex items-center justify-between">
                 <Link href={route('home')} className="flex items-center space-x-2">
-                    <ApplicationLogo className="h-[60px] w-[60px] object-contain" />
+                    <ApplicationLogo className="h-[100px] w-[100px] object-contain" />
                 </Link>
 
                 <div className="hidden md:flex items-center space-x-8">
