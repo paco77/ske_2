@@ -35,6 +35,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'storage_url' => asset('storage') . '/',
+            'app_logo' => \App\Models\AboutInfo::first()?->logo,
         ];
     }
 }

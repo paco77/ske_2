@@ -32,6 +32,7 @@ class AboutController extends Controller
             'mission' => 'required|string',
             'vision' => 'required|string',
             'image' => 'nullable|image|max:2048',
+            'logo' => 'nullable|image|max:2048',
         ]);
 
         $about = AboutInfo::first() ?? new AboutInfo();
@@ -45,8 +46,14 @@ class AboutController extends Controller
             }
             $about->image = $this->imageService->store($request->file('image'), 'about', 800, 600);
         }
-        else
-            $about->image = $about->image;
+
+        if ($request->hasFile('logo')) {
+            if ($about->logo) {
+                Storage::disk('public')->delete($about->logo);
+            }
+            // Use 500x500 max size for logo, or don't resize if we want to keep it transparent/original. We'll use 500x500.
+            $about->logo = $this->imageService->store($request->file('logo'), 'about', 500, 500);
+        }
 
         $about->save();
 

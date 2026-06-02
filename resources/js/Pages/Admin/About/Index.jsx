@@ -6,6 +6,7 @@ export default function Index({ about }) {
         mission: about?.mission || '',
         vision: about?.vision || '',
         image: null,
+        logo: null,
     });
 
     const handleSubmit = (e) => {
@@ -21,17 +22,35 @@ export default function Index({ about }) {
         <AuthenticatedLayout
             header={
                 <h2 className="text-xl font-bold leading-tight text-gray-800">
-                    Misión y Visión
+                    Ajustes Generales (Logo, Misión y Visión)
                 </h2>
             }
         >
-            <Head title="Misión y Visión - Admin" />
+            <Head title="Ajustes Generales - Admin" />
 
             <div className="py-12">
                 <div className="mx-auto max-w-4xl sm:px-6 lg:px-8">
                     <div className="overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-gray-200">
                         <div className="p-10">
                             <form onSubmit={handleSubmit} className="space-y-6">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Logo de la Página (Recomendado png con fondo transparente)</label>
+                                    <input
+                                        type="file"
+                                        onChange={(e) => setData('logo', e.target.files[0])}
+                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                    />
+                                    {about?.logo && (
+                                        <div className="mt-4">
+                                            <p className="text-sm text-gray-500 mb-2">Logo actual:</p>
+                                            <img src={`${window.storageUrl}${about.logo}`} alt="Current Logo" className="h-20 w-20 object-contain bg-gray-100 rounded-lg p-2" />
+                                        </div>
+                                    )}
+                                    {errors.logo && <p className="mt-1 text-xs text-red-500">{errors.logo}</p>}
+                                </div>
+                                
+                                <hr className="border-gray-100" />
+
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Misión</label>
                                     <textarea
@@ -57,7 +76,7 @@ export default function Index({ about }) {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-bold text-gray-700 mb-2">Imagen de la Sección</label>
+                                    <label className="block text-sm font-bold text-gray-700 mb-2">Imagen de la Sección About</label>
                                     <input
                                         type="file"
                                         onChange={(e) => setData('image', e.target.files[0])}
