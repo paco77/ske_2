@@ -36,4 +36,37 @@ class HomeController extends Controller
             'contact' => ContactInfo::first(),
         ]);
     }
+
+    public function brandProducts(Brand $brand)
+    {
+        $brand->load(['products' => fn($q) => $q->where('is_active', true)->with('brand')]);
+
+        // Mock a subcategory-like structure to reuse the Products view without changes
+        $pseudoSubcategory = [
+            'name' => $brand->name,
+            'category' => ['name' => 'Marcas']
+        ];
+
+        return Inertia::render('Products', [
+            'subcategory' => $pseudoSubcategory,
+            'products' => $brand->products,
+            'contact' => ContactInfo::first(),
+        ]);
+    }
+
+    public function categoryProducts(Category $category)
+    {
+        $category->load(['products' => fn($q) => $q->where('products.is_active', true)->with('brand')]);
+
+        $pseudoSubcategory = [
+            'name' => 'Todos los productos',
+            'category' => ['name' => $category->name]
+        ];
+
+        return Inertia::render('Products', [
+            'subcategory' => $pseudoSubcategory,
+            'products' => $category->products,
+            'contact' => ContactInfo::first(),
+        ]);
+    }
 }
