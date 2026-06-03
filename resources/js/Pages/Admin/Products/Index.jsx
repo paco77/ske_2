@@ -1,21 +1,28 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import DataTable from '@/Components/DataTable';
 
-export default function Index({ products, subcategories, brands }) {
+export default function Index({ products, categories, subcategories, brands }) {
     const [isAdding, setIsAdding] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
     const { data, setData, post, delete: destroy, processing, errors, reset } = useForm({
         name: '',
         description: '',
         image: null,
+        category_id: '',
         subcategory_id: '',
         brand_id: '',
         is_active: true,
         _method: 'POST',
     });
+
+    const filteredSubcategories = useMemo(() => {
+        if (!data.category_id) return [];
+        return subcategories.filter(sub => sub.category_id === parseInt(data.category_id));
+    }, [data.category_id, subcategories]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -25,6 +32,7 @@ export default function Index({ products, subcategories, brands }) {
                 onSuccess: () => {
                     setEditingProduct(null);
                     setIsAdding(false);
+                    setImagePreview(null);
                     reset();
                 },
             });
@@ -32,6 +40,7 @@ export default function Index({ products, subcategories, brands }) {
             post(route('admin.products.store'), {
                 onSuccess: () => {
                     setIsAdding(false);
+                    setImagePreview(null);
                     reset();
                 },
             });
@@ -44,11 +53,13 @@ export default function Index({ products, subcategories, brands }) {
             name: product.name,
             description: product.description || '',
             image: null,
-            subcategory_id: product.subcategory_id,
+            category_id: product.category_id || (product.subcategory?.category_id || ''),
+            subcategory_id: product.subcategory_id || '',
             brand_id: product.brand_id || '',
             is_active: !!product.is_active,
             _method: 'POST',
         });
+        setImagePreview(product.image ? `${window.storageUrl}${product.image}` : null);
         setIsAdding(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -90,13 +101,20 @@ export default function Index({ products, subcategories, brands }) {
         },
         {
             label: 'Categoría',
-            key: 'subcategory.name',
+            key: 'category.name',
             sortable: true,
-            sortableKey: 'subcategory.category.name',
+            sortableKey: 'category.name',
             render: (product) => (
-                <span className="text-xs font-medium text-gray-600">
-                    {product.subcategory?.category?.name} {'>'} {product.subcategory?.name}
-                </span>
+                <div className="flex flex-col">
+                    <span className="text-xs font-bold text-gray-800">
+                        {product.category?.name || product.subcategory?.category?.name || '---'}
+                    </span>
+                    {product.subcategory && (
+                        <span className="text-[10px] text-gray-500">
+                            ↳ {product.subcategory.name}
+                        </span>
+                    )}
+                </div>
             )
         },
         {
@@ -132,6 +150,7 @@ export default function Index({ products, subcategories, brands }) {
                     <button
                         onClick={() => {
                             setEditingProduct(null);
+                            setImagePreview(null);
                             reset();
                             setIsAdding(!isAdding);
                         }}
@@ -160,6 +179,7 @@ export default function Index({ products, subcategories, brands }) {
                                                 className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
                                                 required
                                             />
+                                            {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
                                         </div>
                                         <div>
                                             <label className="block text-sm font-bold text-gray-700 mb-2">Descripción</label>
@@ -169,47 +189,86 @@ export default function Index({ products, subcategories, brands }) {
                                                 onChange={(e) => setData('description', e.target.value)}
                                                 className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
                                             ></textarea>
+                                            {errors.description && <div className="text-red-500 text-xs mt-1">{errors.description}</div>}
                                         </div>
                                     </div>
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-2 gap-4">
                                             <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-2">Subcategoría</label>
+                                                <label className="block text-sm font-bold text-gray-700 mb-2">Categoría</label>
                                                 <select
-                                                    value={data.subcategory_id}
-                                                    onChange={(e) => setData('subcategory_id', e.target.value)}
+                                                    value={data.category_id}
+                                                    onChange={(e) => {
+                                                        setData('category_id', e.target.value);
+                                                        setData('subcategory_id', ''); // Reset subcategory when category changes
+                                                    }}
                                                     className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800 text-sm"
                                                     required
                                                 >
                                                     <option value="">Seleccionar...</option>
-                                                    {subcategories.map((sub) => (
-                                                        <option key={sub.id} value={sub.id}>
-                                                            {sub.category?.name} {'>'} {sub.name}
+                                                    {categories.map((cat) => (
+                                                        <option key={cat.id} value={cat.id}>
+                                                            {cat.name}
                                                         </option>
                                                     ))}
                                                 </select>
+                                                {errors.category_id && <div className="text-red-500 text-xs mt-1">{errors.category_id}</div>}
                                             </div>
                                             <div>
-                                                <label className="block text-sm font-bold text-gray-700 mb-2">Marca (Opcional)</label>
+                                                <label className="block text-sm font-bold text-gray-700 mb-2">Subcategoría (Opcional)</label>
                                                 <select
-                                                    value={data.brand_id}
-                                                    onChange={(e) => setData('brand_id', e.target.value)}
+                                                    value={data.subcategory_id}
+                                                    onChange={(e) => setData('subcategory_id', e.target.value)}
                                                     className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800 text-sm"
+                                                    disabled={!data.category_id || filteredSubcategories.length === 0}
                                                 >
                                                     <option value="">Ninguna</option>
-                                                    {brands.map((brand) => (
-                                                        <option key={brand.id} value={brand.id}>{brand.name}</option>
+                                                    {filteredSubcategories.map((sub) => (
+                                                        <option key={sub.id} value={sub.id}>
+                                                            {sub.name}
+                                                        </option>
                                                     ))}
                                                 </select>
+                                                {errors.subcategory_id && <div className="text-red-500 text-xs mt-1">{errors.subcategory_id}</div>}
                                             </div>
                                         </div>
                                         <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Marca (Opcional)</label>
+                                            <select
+                                                value={data.brand_id}
+                                                onChange={(e) => setData('brand_id', e.target.value)}
+                                                className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800 text-sm"
+                                            >
+                                                <option value="">Ninguna</option>
+                                                {brands.map((brand) => (
+                                                    <option key={brand.id} value={brand.id}>{brand.name}</option>
+                                                ))}
+                                            </select>
+                                            {errors.brand_id && <div className="text-red-500 text-xs mt-1">{errors.brand_id}</div>}
+                                        </div>
+                                        <div>
                                             <label className="block text-sm font-bold text-gray-700 mb-2">Imagen</label>
-                                            <input
-                                                type="file"
-                                                onChange={(e) => setData('image', e.target.files[0])}
-                                                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
-                                            />
+                                            <div className="flex items-center gap-4">
+                                                {imagePreview && (
+                                                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                                                        <img src={imagePreview} alt="Preview" className="h-full w-full object-contain" />
+                                                    </div>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files[0];
+                                                        setData('image', file);
+                                                        if (file) {
+                                                            setImagePreview(URL.createObjectURL(file));
+                                                        } else {
+                                                            setImagePreview(editingProduct?.image ? `${window.storageUrl}${editingProduct.image}` : null);
+                                                        }
+                                                    }}
+                                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                                />
+                                            </div>
+                                            {errors.image && <div className="text-red-500 text-xs mt-1">{errors.image}</div>}
                                         </div>
                                         <div className="flex items-center pt-2">
                                             <input

@@ -6,6 +6,7 @@ import DataTable from '@/Components/DataTable';
 export default function Index({ brands }) {
     const [isAdding, setIsAdding] = useState(false);
     const [editingBrand, setEditingBrand] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
 
     const { data, setData, post, delete: destroy, processing, errors, reset } = useForm({
         name: '',
@@ -21,6 +22,7 @@ export default function Index({ brands }) {
                 forceFormData: true,
                 onSuccess: () => {
                     setEditingBrand(null);
+                    setImagePreview(null);
                     reset();
                     setIsAdding(false);
                 },
@@ -29,6 +31,7 @@ export default function Index({ brands }) {
             post(route('admin.brands.store'), {
                 onSuccess: () => {
                     setIsAdding(false);
+                    setImagePreview(null);
                     reset();
                 },
             });
@@ -44,6 +47,7 @@ export default function Index({ brands }) {
             is_active: !!brand.is_active,
             _method: 'POST',
         });
+        setImagePreview(brand.logo ? `${window.storageUrl}${brand.logo}` : null);
         setIsAdding(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -116,6 +120,7 @@ export default function Index({ brands }) {
                     <button
                         onClick={() => {
                             setEditingBrand(null);
+                            setImagePreview(null);
                             reset();
                             setIsAdding(!isAdding);
                         }}
@@ -152,11 +157,26 @@ export default function Index({ brands }) {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-700 mb-2">Logo</label>
-                                        <input
-                                            type="file"
-                                            onChange={(e) => setData('logo', e.target.files[0])}
-                                            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
-                                        />
+                                        <div className="flex items-center gap-4">
+                                            {imagePreview && (
+                                                <div className="h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-1">
+                                                    <img src={imagePreview} alt="Preview" className="h-full w-full object-contain" />
+                                                </div>
+                                            )}
+                                            <input
+                                                type="file"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    setData('logo', file);
+                                                    if (file) {
+                                                        setImagePreview(URL.createObjectURL(file));
+                                                    } else {
+                                                        setImagePreview(editingBrand?.logo ? `${window.storageUrl}${editingBrand.logo}` : null);
+                                                    }
+                                                }}
+                                                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                            />
+                                        </div>
                                         {errors.logo && <p className="mt-1 text-xs text-red-500">{errors.logo}</p>}
                                     </div>
                                     <div>

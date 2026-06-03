@@ -24,7 +24,8 @@ class ProductController extends Controller
     public function index()
     {
         return Inertia::render('Admin/Products/Index', [
-            'products' => Product::with(['subcategory.category', 'brand'])->latest()->get(),
+            'products' => Product::with(['category', 'subcategory.category', 'brand'])->latest()->get(),
+            'categories' => \App\Models\Category::orderBy('name')->get(),
             'subcategories' => Subcategory::with('category')->orderBy('name')->get(),
             'brands' => Brand::orderBy('name')->get(),
         ]);
@@ -36,7 +37,8 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:4096',
-            'subcategory_id' => 'required|exists:subcategories,id',
+            'category_id' => 'required|exists:categories,id',
+            'subcategory_id' => 'nullable|exists:subcategories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'is_active' => 'boolean',
         ]);
@@ -56,7 +58,8 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:4096',
-            'subcategory_id' => 'required|exists:subcategories,id',
+            'category_id' => 'required|exists:categories,id',
+            'subcategory_id' => 'nullable|exists:subcategories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'is_active' => 'boolean',
         ]);

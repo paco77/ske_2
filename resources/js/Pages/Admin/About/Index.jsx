@@ -1,7 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, useForm } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function Index({ about }) {
+    const [logoPreview, setLogoPreview] = useState(about?.logo ? `${window.storageUrl}${about.logo}` : null);
+    const [imagePreview, setImagePreview] = useState(about?.image ? `${window.storageUrl}${about.image}` : null);
     const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
         mission: about?.mission || '',
         vision: about?.vision || '',
@@ -35,17 +38,26 @@ export default function Index({ about }) {
                             <form onSubmit={handleSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Logo de la Página (Recomendado png con fondo transparente)</label>
-                                    <input
-                                        type="file"
-                                        onChange={(e) => setData('logo', e.target.files[0])}
-                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
-                                    />
-                                    {about?.logo && (
-                                        <div className="mt-4">
-                                            <p className="text-sm text-gray-500 mb-2">Logo actual:</p>
-                                            <img src={`${window.storageUrl}${about.logo}`} alt="Current Logo" className="h-20 w-20 object-contain bg-gray-100 rounded-lg p-2" />
-                                        </div>
-                                    )}
+                                    <div className="flex items-center gap-4">
+                                        {logoPreview && (
+                                            <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50 p-1">
+                                                <img src={logoPreview} alt="Preview" className="h-full w-full object-contain" />
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                setData('logo', file);
+                                                if (file) {
+                                                    setLogoPreview(URL.createObjectURL(file));
+                                                } else {
+                                                    setLogoPreview(about?.logo ? `${window.storageUrl}${about.logo}` : null);
+                                                }
+                                            }}
+                                            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                        />
+                                    </div>
                                     {errors.logo && <p className="mt-1 text-xs text-red-500">{errors.logo}</p>}
                                 </div>
                                 
@@ -77,17 +89,26 @@ export default function Index({ about }) {
 
                                 <div>
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Imagen de la Sección About</label>
-                                    <input
-                                        type="file"
-                                        onChange={(e) => setData('image', e.target.files[0])}
-                                        className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
-                                    />
-                                    {about?.image && (
-                                        <div className="mt-4">
-                                            <p className="text-sm text-gray-500 mb-2">Imagen actual:</p>
-                                            <img src={`${window.storageUrl}${about.image}`} alt="Current" className="h-32 rounded-lg object-cover" />
-                                        </div>
-                                    )}
+                                    <div className="flex items-center gap-4">
+                                        {imagePreview && (
+                                            <div className="h-24 w-32 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                                                <img src={imagePreview} alt="Preview" className="h-full w-full object-cover" />
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                setData('image', file);
+                                                if (file) {
+                                                    setImagePreview(URL.createObjectURL(file));
+                                                } else {
+                                                    setImagePreview(about?.image ? `${window.storageUrl}${about.image}` : null);
+                                                }
+                                            }}
+                                            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                        />
+                                    </div>
                                     {errors.image && <p className="mt-1 text-xs text-red-500">{errors.image}</p>}
                                 </div>
 

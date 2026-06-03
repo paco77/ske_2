@@ -7,6 +7,8 @@ export default function Index({ categories }) {
     const [editingCategory, setEditingCategory] = useState(null);
     const [isAddingSub, setIsAddingSub] = useState(false);
     const [selectedCatForSub, setSelectedCatForSub] = useState(null);
+    const [catImagePreview, setCatImagePreview] = useState(null);
+    const [subImagePreview, setSubImagePreview] = useState(null);
 
     const categoryForm = useForm({
         name: '',
@@ -32,6 +34,7 @@ export default function Index({ categories }) {
                 onSuccess: () => {
                     setEditingCategory(null);
                     setIsAdding(false);
+                    setCatImagePreview(null);
                     categoryForm.reset();
                 },
             });
@@ -39,6 +42,7 @@ export default function Index({ categories }) {
             categoryForm.post(route('admin.categories.store'), {
                 onSuccess: () => {
                     setIsAdding(false);
+                    setCatImagePreview(null);
                     categoryForm.reset();
                 },
             });
@@ -50,6 +54,7 @@ export default function Index({ categories }) {
         subcategoryForm.post(route('admin.subcategories.store', selectedCatForSub.id), {
             onSuccess: () => {
                 setIsAddingSub(false);
+                setSubImagePreview(null);
                 subcategoryForm.reset();
             },
         });
@@ -77,6 +82,7 @@ export default function Index({ categories }) {
                     <button
                         onClick={() => {
                             setEditingCategory(null);
+                            setCatImagePreview(null);
                             categoryForm.reset();
                             setIsAdding(!isAdding);
                         }}
@@ -112,11 +118,26 @@ export default function Index({ categories }) {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-700 mb-2">Imagen</label>
-                                        <input
-                                            type="file"
-                                            onChange={(e) => categoryForm.setData('image', e.target.files[0])}
-                                            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
-                                        />
+                                        <div className="flex items-center gap-4">
+                                            {catImagePreview && (
+                                                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                                                    <img src={catImagePreview} alt="Preview" className="h-full w-full object-contain" />
+                                                </div>
+                                            )}
+                                            <input
+                                                type="file"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    categoryForm.setData('image', file);
+                                                    if (file) {
+                                                        setCatImagePreview(URL.createObjectURL(file));
+                                                    } else {
+                                                        setCatImagePreview(editingCategory?.image ? `${window.storageUrl}${editingCategory.image}` : null);
+                                                    }
+                                                }}
+                                                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                            />
+                                        </div>
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-700 mb-2">Orden</label>
@@ -171,17 +192,35 @@ export default function Index({ categories }) {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold text-gray-700 mb-2">Imagen</label>
-                                        <input
-                                            type="file"
-                                            onChange={(e) => subcategoryForm.setData('image', e.target.files[0])}
-                                            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
-                                        />
+                                        <div className="flex items-center gap-4">
+                                            {subImagePreview && (
+                                                <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                                                    <img src={subImagePreview} alt="Preview" className="h-full w-full object-contain" />
+                                                </div>
+                                            )}
+                                            <input
+                                                type="file"
+                                                onChange={(e) => {
+                                                    const file = e.target.files[0];
+                                                    subcategoryForm.setData('image', file);
+                                                    if (file) {
+                                                        setSubImagePreview(URL.createObjectURL(file));
+                                                    } else {
+                                                        setSubImagePreview(null);
+                                                    }
+                                                }}
+                                                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-gray-700 hover:file:bg-gray-100"
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="mt-8 flex justify-end space-x-4">
                                     <button
                                         type="button"
-                                        onClick={() => setIsAddingSub(false)}
+                                        onClick={() => {
+                                            setIsAddingSub(false);
+                                            setSubImagePreview(null);
+                                        }}
                                         className="rounded-full bg-gray-100 px-8 py-3 text-sm font-bold text-gray-600 hover:bg-gray-200"
                                     >
                                         Cancelar
@@ -214,6 +253,7 @@ export default function Index({ categories }) {
                                             onClick={() => {
                                                 setSelectedCatForSub(category);
                                                 setIsAddingSub(true);
+                                                setSubImagePreview(null);
                                                 subcategoryForm.reset();
                                             }}
                                             className="text-black hover:text-gray-800 text-sm font-bold"
@@ -230,6 +270,7 @@ export default function Index({ categories }) {
                                                     is_active: !!category.is_active,
                                                     _method: 'POST',
                                                 });
+                                                setCatImagePreview(category.image ? `${window.storageUrl}${category.image}` : null);
                                                 setIsAdding(true);
                                                 window.scrollTo({ top: 0, behavior: 'smooth' });
                                             }}
