@@ -31,7 +31,7 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'required|image|max:4096',
+            'image' => 'required|image|max:10240',
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);
@@ -49,7 +49,7 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|max:4096',
+            'image' => 'nullable|image|max:10240',
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);
@@ -83,7 +83,7 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|max:4096',
+            'image' => 'nullable|image|max:10240',
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);
@@ -101,7 +101,7 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'image' => 'nullable|image|max:4096',
+            'image' => 'nullable|image|max:10240',
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);

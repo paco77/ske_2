@@ -9,12 +9,14 @@ export default function Navbar() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [hoveredDropdown, setHoveredDropdown] = useState(null);
     const [expandedMenu, setExpandedMenu] = useState(null);
+    const [menuSearchQuery, setMenuSearchQuery] = useState('');
 
     const toggleMobileMenu = (name) => {
         if (expandedMenu === name) {
             setExpandedMenu(null);
         } else {
             setExpandedMenu(name);
+            setMenuSearchQuery('');
         }
     };
 
@@ -48,7 +50,12 @@ export default function Navbar() {
                         <div
                             key={link.name}
                             className="relative group"
-                            onMouseEnter={() => link.hasDropdown && setHoveredDropdown(link.name)}
+                            onMouseEnter={() => {
+                                if (link.hasDropdown) {
+                                    setHoveredDropdown(link.name);
+                                    setMenuSearchQuery('');
+                                }
+                            }}
                             onMouseLeave={() => link.hasDropdown && setHoveredDropdown(null)}
                         >
                             <a
@@ -74,9 +81,19 @@ export default function Navbar() {
                                             transition={{ duration: 0.2 }}
                                             className="absolute left-0 mt-2 w-56 bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 py-2"
                                         >
+                                            <div className="p-2 border-b border-gray-100">
+                                                <input
+                                                    type="text"
+                                                    placeholder={`Buscar ${link.name.toLowerCase()}...`}
+                                                    value={menuSearchQuery}
+                                                    onChange={(e) => setMenuSearchQuery(e.target.value)}
+                                                    className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                                                    onClick={(e) => e.stopPropagation()}
+                                                />
+                                            </div>
                                             <div className="max-h-[350px] overflow-y-auto">
-                                                {link.dropdownItems && link.dropdownItems.length > 0 ? (
-                                                    link.dropdownItems.map((item) => (
+                                                {link.dropdownItems && link.dropdownItems.filter(item => item.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).length > 0 ? (
+                                                    link.dropdownItems.filter(item => item.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).map((item) => (
                                                         <Link
                                                             key={item.id}
                                                             href={route(link.routeName, item.id)}
@@ -86,7 +103,9 @@ export default function Navbar() {
                                                         </Link>
                                                     ))
                                                 ) : (
-                                                    <span className="block px-4 py-2 text-sm text-gray-400">{link.emptyMessage}</span>
+                                                    <span className="block px-4 py-3 text-sm text-center text-gray-400">
+                                                        {menuSearchQuery ? 'No hay resultados' : link.emptyMessage}
+                                                    </span>
                                                 )}
                                             </div>
                                         </motion.div>
@@ -152,20 +171,33 @@ export default function Navbar() {
                                             >
                                                 Ver {link.name.toLowerCase()}
                                             </a>
-                                            {link.dropdownItems && link.dropdownItems.length > 0 ? (
-                                                link.dropdownItems.map((item) => (
-                                                    <Link
-                                                        key={item.id}
-                                                        href={route(link.routeName, item.id)}
-                                                        onClick={() => setMobileMenuOpen(false)}
-                                                        className="text-gray-600 hover:text-gray-900 text-sm py-1"
-                                                    >
-                                                        {item.name}
-                                                    </Link>
-                                                ))
-                                            ) : (
-                                                <span className="text-gray-400 text-sm py-1">{link.emptyMessage}</span>
-                                            )}
+                                            <div className="pr-4 mb-2">
+                                                <input
+                                                    type="text"
+                                                    placeholder={`Buscar ${link.name.toLowerCase()}...`}
+                                                    value={menuSearchQuery}
+                                                    onChange={(e) => setMenuSearchQuery(e.target.value)}
+                                                    className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col space-y-1">
+                                                {link.dropdownItems && link.dropdownItems.filter(item => item.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).length > 0 ? (
+                                                    link.dropdownItems.filter(item => item.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).map((item) => (
+                                                        <Link
+                                                            key={item.id}
+                                                            href={route(link.routeName, item.id)}
+                                                            onClick={() => setMobileMenuOpen(false)}
+                                                            className="text-gray-600 hover:text-gray-900 text-sm py-1"
+                                                        >
+                                                            {item.name}
+                                                        </Link>
+                                                    ))
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm py-2 text-center">
+                                                        {menuSearchQuery ? 'No hay resultados' : link.emptyMessage}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
                                 </div>

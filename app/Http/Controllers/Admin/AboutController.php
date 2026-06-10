@@ -31,8 +31,8 @@ class AboutController extends Controller
         $request->validate([
             'mission' => 'required|string',
             'vision' => 'required|string',
-            'image' => 'nullable|image|max:2048',
-            'logo' => 'nullable|image|max:2048',
+            'image' => 'nullable|image|max:10240',
+            'logo' => 'nullable|image|max:10240',
         ]);
 
         $about = AboutInfo::first() ?? new AboutInfo();

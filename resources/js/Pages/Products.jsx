@@ -8,6 +8,12 @@ import { motion } from 'framer-motion';
 export default function Products({ subcategory, products, contact }) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
 
     const openModal = (product) => {
         setSelectedProduct(product);
@@ -40,14 +46,30 @@ export default function Products({ subcategory, products, contact }) {
                             <h1 className="text-4xl font-black text-gray-900">{subcategory.name}</h1>
                             <p className="mt-2 text-xl text-gray-600">Listado de productos disponibles</p>
                         </div>
-                        <div className="bg-gray-100 text-black px-4 py-2 rounded-lg font-bold">
-                            {products.length} Productos encontrados
+                        <div className="flex flex-col sm:flex-row gap-4 items-center">
+                            <div className="relative w-full sm:w-64 md:w-80">
+                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                                <input
+                                    type="text"
+                                    placeholder="Buscar producto por nombre..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 sm:text-sm"
+                                />
+                            </div>
+                            <div className="bg-gray-100 text-black px-4 py-2 rounded-lg font-bold whitespace-nowrap">
+                                {filteredProducts.length} {filteredProducts.length === 1 ? 'Producto encontrado' : 'Productos encontrados'}
+                            </div>
                         </div>
                     </div>
 
-                    {products.length > 0 ? (
+                    {filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {products.map((product, index) => (
+                            {filteredProducts.map((product, index) => (
                                 <motion.div
                                     key={product.id}
                                     initial={{ opacity: 0, y: 20 }}
@@ -100,7 +122,19 @@ export default function Products({ subcategory, products, contact }) {
                                 </svg>
                             </div>
                             <h3 className="text-2xl font-bold text-gray-900">No hay productos disponibles</h3>
-                            <p className="mt-2 text-gray-500">Estamos actualizando nuestro catálogo. Vuelve pronto o contáctanos.</p>
+                            <p className="mt-2 text-gray-500">
+                                {searchQuery 
+                                    ? `No se encontraron resultados para "${searchQuery}".` 
+                                    : 'Estamos actualizando nuestro catálogo. Vuelve pronto o contáctanos.'}
+                            </p>
+                            {searchQuery && (
+                                <button
+                                    onClick={() => setSearchQuery('')}
+                                    className="mt-4 text-gray-900 font-bold hover:underline"
+                                >
+                                    Limpiar búsqueda
+                                </button>
+                            )}
                             <Link href={route('home')} className="mt-8 text-gray-900 font-bold hover:underline">
                                 Volver al inicio
                             </Link>
