@@ -7,11 +7,14 @@ export default function Index({ products, categories, subcategories, brands }) {
     const [isAdding, setIsAdding] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [galleryPreviews, setGalleryPreviews] = useState([]);
 
     const { data, setData, post, delete: destroy, processing, errors, reset } = useForm({
         name: '',
         description: '',
         image: null,
+        images: [],
+        kept_images: [],
         category_id: '',
         subcategory_id: '',
         brand_id: '',
@@ -33,6 +36,7 @@ export default function Index({ products, categories, subcategories, brands }) {
                     setEditingProduct(null);
                     setIsAdding(false);
                     setImagePreview(null);
+                    setGalleryPreviews([]);
                     reset();
                 },
             });
@@ -41,6 +45,7 @@ export default function Index({ products, categories, subcategories, brands }) {
                 onSuccess: () => {
                     setIsAdding(false);
                     setImagePreview(null);
+                    setGalleryPreviews([]);
                     reset();
                 },
             });
@@ -53,6 +58,8 @@ export default function Index({ products, categories, subcategories, brands }) {
             name: product.name,
             description: product.description || '',
             image: null,
+            images: [],
+            kept_images: product.images || [],
             category_id: product.category_id || (product.subcategory?.category_id || ''),
             subcategory_id: product.subcategory_id || '',
             brand_id: product.brand_id || '',
@@ -60,6 +67,7 @@ export default function Index({ products, categories, subcategories, brands }) {
             _method: 'POST',
         });
         setImagePreview(product.image ? `${window.storageUrl}${product.image}` : null);
+        setGalleryPreviews([]);
         setIsAdding(true);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -151,6 +159,7 @@ export default function Index({ products, categories, subcategories, brands }) {
                         onClick={() => {
                             setEditingProduct(null);
                             setImagePreview(null);
+                            setGalleryPreviews([]);
                             reset();
                             setIsAdding(!isAdding);
                         }}
@@ -269,6 +278,42 @@ export default function Index({ products, categories, subcategories, brands }) {
                                                 />
                                             </div>
                                             {errors.image && <div className="text-red-500 text-xs mt-1">{errors.image}</div>}
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Galería de Imágenes (Múltiples)</label>
+                                            <input
+                                                type="file"
+                                                multiple
+                                                onChange={(e) => {
+                                                    const files = Array.from(e.target.files);
+                                                    setData('images', files);
+                                                    setGalleryPreviews(files.map(f => URL.createObjectURL(f)));
+                                                }}
+                                                className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100 mb-4"
+                                            />
+                                            {(data.kept_images.length > 0 || galleryPreviews.length > 0) && (
+                                                <div className="grid grid-cols-4 gap-4 mt-4">
+                                                    {data.kept_images.map((img, idx) => (
+                                                        <div key={`kept-${idx}`} className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                                                            <img src={`${window.storageUrl}${img}`} alt="Preview" className="h-full w-full object-contain" />
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => setData('kept_images', data.kept_images.filter(i => i !== img))}
+                                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                                                            >
+                                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                    {galleryPreviews.map((preview, idx) => (
+                                                        <div key={`new-${idx}`} className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-blue-200 bg-blue-50">
+                                                            <img src={preview} alt="New Preview" className="h-full w-full object-contain" />
+                                                            <span className="absolute bottom-0 left-0 right-0 bg-blue-500 text-white text-[8px] text-center py-0.5">NUEVA</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {errors.images && <div className="text-red-500 text-xs mt-1">{errors.images}</div>}
                                         </div>
                                         <div className="flex items-center pt-2">
                                             <input

@@ -5,9 +5,90 @@ import ContactSection from '@/Components/ContactSection';
 import Modal from '@/Components/Modal';
 import { motion } from 'framer-motion';
 
+const ProductCard = ({ product, index, contact, openModal }) => {
+    const images = [product.image, ...(product.images || [])].filter(Boolean);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    const nextImage = (e) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev + 1) % images.length);
+    };
+
+    const prevImage = (e) => {
+        e.stopPropagation();
+        setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+    };
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.05 }}
+            className="group relative flex flex-col rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-xl hover:ring-gray-900/10 cursor-pointer"
+            onClick={() => openModal(product)}
+        >
+            <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-gray-100">
+                <img
+                    src={`${window.storageUrl}${images[currentImageIndex]}`}
+                    alt={product.name}
+                    className="h-full w-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
+                    onError={(e) => (e.target.src = 'https://via.placeholder.com/300?text=' + product.name)}
+                />
+                {images.length > 1 && (
+                    <>
+                        <button
+                            onClick={prevImage}
+                            className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-1.5 text-gray-800 opacity-0 transition-opacity hover:bg-white group-hover:opacity-100 shadow-md"
+                        >
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                        <button
+                            onClick={nextImage}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-1.5 text-gray-800 opacity-0 transition-opacity hover:bg-white group-hover:opacity-100 shadow-md"
+                        >
+                            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                        <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 space-x-1">
+                            {images.map((_, idx) => (
+                                <div key={idx} className={`h-1.5 w-1.5 rounded-full ${idx === currentImageIndex ? 'bg-gray-800' : 'bg-gray-300/50'}`} />
+                            ))}
+                        </div>
+                    </>
+                )}
+            </div>
+            <div className="mt-6 flex-grow flex flex-col">
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-gray-900 bg-gray-50 px-2 py-0.5 rounded">
+                        {product.brand?.name || 'SKE'}
+                    </span>
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 group-hover:text-gray-900 line-clamp-2">
+                    {product.name}
+                </h3>
+                <p className="mt-3 text-sm text-gray-500 line-clamp-3">
+                    {product.description}
+                </p>
+
+                <div className="mt-auto pt-6">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(`https://wa.me/${contact.whatsapp}?text=Hola, me interesa el producto: ${product.name}`, '_blank');
+                        }}
+                        className="flex w-full items-center justify-center rounded-xl bg-gray-900 py-3 text-sm font-bold text-white transition-all hover:bg-gray-900 active:scale-95"
+                    >
+                        Solicitar Cotización
+                    </button>
+                </div>
+            </div>
+        </motion.div>
+    );
+};
+
 export default function Products({ subcategory, products, contact }) {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalImageIndex, setModalImageIndex] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
 
     const filteredProducts = products.filter(product =>
@@ -17,6 +98,7 @@ export default function Products({ subcategory, products, contact }) {
 
     const openModal = (product) => {
         setSelectedProduct(product);
+        setModalImageIndex(0);
         setIsModalOpen(true);
     };
 
@@ -70,48 +152,7 @@ export default function Products({ subcategory, products, contact }) {
                     {filteredProducts.length > 0 ? (
                         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             {filteredProducts.map((product, index) => (
-                                <motion.div
-                                    key={product.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.05 }}
-                                    className="group relative flex flex-col rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-xl hover:ring-gray-900/10 cursor-pointer"
-                                    onClick={() => openModal(product)}
-                                >
-                                    <div className="aspect-square w-full overflow-hidden rounded-xl bg-gray-100">
-                                        <img
-                                            src={`${window.storageUrl}${product.image}`}
-                                            alt={product.name}
-                                            className="h-full w-full object-contain p-4 transition-transform duration-500 group-hover:scale-110"
-                                            onError={(e) => (e.target.src = 'https://via.placeholder.com/300?text=' + product.name)}
-                                        />
-                                    </div>
-                                    <div className="mt-6 flex-grow flex flex-col">
-                                        <div className="flex items-center justify-between mb-2">
-                                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-900 bg-gray-50 px-2 py-0.5 rounded">
-                                                {product.brand?.name || 'SKE'}
-                                            </span>
-                                        </div>
-                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-gray-900 line-clamp-2">
-                                            {product.name}
-                                        </h3>
-                                        <p className="mt-3 text-sm text-gray-500 line-clamp-3">
-                                            {product.description}
-                                        </p>
-
-                                        <div className="mt-auto pt-6">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    window.open(`https://wa.me/${contact.whatsapp}?text=Hola, me interesa el producto: ${product.name}`, '_blank');
-                                                }}
-                                                className="flex w-full items-center justify-center rounded-xl bg-gray-900 py-3 text-sm font-bold text-white transition-all hover:bg-gray-900 active:scale-95"
-                                            >
-                                                Solicitar Cotización
-                                            </button>
-                                        </div>
-                                    </div>
-                                </motion.div>
+                                <ProductCard key={product.id} product={product} index={index} contact={contact} openModal={openModal} />
                             ))}
                         </div>
                     ) : (
@@ -155,13 +196,41 @@ export default function Products({ subcategory, products, contact }) {
                             </svg>
                         </button>
                         
-                        <div className="md:w-1/2 flex items-center justify-center bg-gray-50 rounded-2xl p-6">
-                            <img
-                                src={`${window.storageUrl}${selectedProduct.image}`}
-                                alt={selectedProduct.name}
-                                className="max-h-[500px] w-auto object-contain"
-                                onError={(e) => (e.target.src = 'https://via.placeholder.com/600?text=' + selectedProduct.name)}
-                            />
+                        <div className="md:w-1/2 flex items-center justify-center bg-gray-50 rounded-2xl p-6 relative group">
+                            {(() => {
+                                const modalImages = [selectedProduct.image, ...(selectedProduct.images || [])].filter(Boolean);
+                                return (
+                                    <>
+                                        <img
+                                            src={`${window.storageUrl}${modalImages[modalImageIndex]}`}
+                                            alt={selectedProduct.name}
+                                            className="max-h-[500px] w-auto object-contain transition-all"
+                                            onError={(e) => (e.target.src = 'https://via.placeholder.com/600?text=' + selectedProduct.name)}
+                                        />
+                                        {modalImages.length > 1 && (
+                                            <>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); setModalImageIndex((prev) => (prev === 0 ? modalImages.length - 1 : prev - 1)); }}
+                                                    className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 opacity-0 transition-opacity hover:bg-white group-hover:opacity-100 shadow-md"
+                                                >
+                                                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                                </button>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); setModalImageIndex((prev) => (prev + 1) % modalImages.length); }}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/80 p-2 text-gray-800 opacity-0 transition-opacity hover:bg-white group-hover:opacity-100 shadow-md"
+                                                >
+                                                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                                </button>
+                                                <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 space-x-1">
+                                                    {modalImages.map((_, idx) => (
+                                                        <div key={idx} className={`h-2 w-2 rounded-full ${idx === modalImageIndex ? 'bg-gray-800' : 'bg-gray-300'}`} />
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )}
+                                    </>
+                                );
+                            })()}
                         </div>
                         <div className="md:w-1/2 flex flex-col justify-center">
                             <div className="mb-2 inline-block">

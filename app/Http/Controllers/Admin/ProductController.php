@@ -41,11 +41,21 @@ class ProductController extends Controller
             'subcategory_id' => 'nullable|exists:subcategories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'is_active' => 'boolean',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:10240',
         ]);
 
         if ($request->hasFile('image')) {
             $data['image'] = $this->imageService->store($request->file('image'), 'products', 800, 800);
         }
+
+        $imagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $imagePaths[] = $this->imageService->store($file, 'products/gallery', 800, 800);
+            }
+        }
+        $data['images'] = $imagePaths;
 
         Product::create($data);
 
@@ -62,6 +72,10 @@ class ProductController extends Controller
             'subcategory_id' => 'nullable|exists:subcategories,id',
             'brand_id' => 'nullable|exists:brands,id',
             'is_active' => 'boolean',
+            'images' => 'nullable|array',
+            'images.*' => 'image|max:10240',
+            'kept_images' => 'nullable|array',
+            'kept_images.*' => 'string',
         ]);
 
         if ($request->hasFile('image')) {
@@ -70,8 +84,27 @@ class ProductController extends Controller
             }
             $data['image'] = $this->imageService->store($request->file('image'), 'products', 800, 800);
         }
-        else
+        else {
             $data['image'] = $product->image;
+        }
+
+        $existingImages = $product->images ?? [];
+        $keptImages = $request->input('kept_images', []);
+        
+        foreach ($existingImages as $existingImage) {
+            if (!in_array($existingImage, $keptImages)) {
+                Storage::disk('public')->delete($existingImage);
+            }
+        }
+
+        $newImagePaths = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                $newImagePaths[] = $this->imageService->store($file, 'products/gallery', 800, 800);
+            }
+        }
+
+        $data['images'] = array_merge($keptImages, $newImagePaths);
 
         $product->update($data);
 
@@ -82,6 +115,11 @@ class ProductController extends Controller
     {
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
+        }
+        if ($product->images) {
+            foreach ((array)$product->images as $image) {
+                Storage::disk('public')->delete($image);
+            }
         }
         $product->delete();
 
