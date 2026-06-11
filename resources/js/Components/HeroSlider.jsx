@@ -31,7 +31,7 @@ export default function HeroSlider({ sliders }) {
                     <div
                         className="absolute inset-0 bg-center bg-no-repeat bg-[size:100%_100%]"
                         style={{
-                            backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url(${window.storageUrl}${sliders[current].image})`,
+                            backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('${window.storageUrl}${sliders[current].image}')`,
                         }}
                     >
                         <div className="flex h-full items-center justify-center px-6 text-center">
