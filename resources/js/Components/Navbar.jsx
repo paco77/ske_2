@@ -37,11 +37,17 @@ export default function Navbar() {
 
     return (
         <nav
-            className="sticky top-0 left-0 right-0 z-50 bg-gradient-to-r from-white to-blue-100 py-4 shadow-lg backdrop-blur-md transition-all duration-300"
+            className={`sticky top-0 left-0 right-0 z-50 bg-gradient-to-r from-white to-blue-100 shadow-lg backdrop-blur-md transition-all duration-300 ${
+                isScrolled ? 'py-1' : 'py-4'
+            }`}
         >
             <div className="container mx-auto px-6 flex items-center justify-between">
                 <Link href={route('home')} className="flex items-center space-x-2">
-                    <ApplicationLogo className="h-[100px] w-[100px] object-contain" />
+                    <ApplicationLogo 
+                        className={`object-contain transition-all duration-300 ${
+                            isScrolled ? 'h-[75px] w-[75px]' : 'h-[100px] w-[100px]'
+                        }`} 
+                    />
                 </Link>
 
                 <div className="hidden md:flex items-center space-x-8 relative">

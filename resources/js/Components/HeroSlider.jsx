@@ -18,8 +18,9 @@ export default function HeroSlider({ sliders }) {
     const prevSlide = () => setCurrent((prev) => (prev === 0 ? sliders.length - 1 : prev - 1));
 
     return (
-        <section id="inicio" className="relative min-h-[40vh] h-[40vh] md:h-[80vh] lg:h-screen w-full overflow-hidden bg-gray-900">
-            <AnimatePresence mode="wait">
+        <div className="w-full px-[5px] pt-[5px]">
+            <section id="inicio" className="scroll-mt-[140px] relative aspect-[4/3] md:aspect-video w-full max-h-screen overflow-hidden bg-gray-900 rounded-lg">
+                <AnimatePresence mode="wait">
                 <motion.div
                     key={current}
                     initial={{ opacity: 0 }}
@@ -29,7 +30,7 @@ export default function HeroSlider({ sliders }) {
                     className="absolute inset-0"
                 >
                     <div
-                        className="absolute inset-0 bg-center bg-no-repeat bg-[size:100%_100%]"
+                        className="absolute inset-0 bg-center bg-no-repeat bg-cover"
                         style={{
                             backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url('${window.storageUrl}${sliders[current].image}')`,
                         }}
@@ -94,6 +95,7 @@ export default function HeroSlider({ sliders }) {
                     </div>
                 </>
             )}
-        </section>
+            </section>
+        </div>
     );
 }
