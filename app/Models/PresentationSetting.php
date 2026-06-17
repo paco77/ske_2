@@ -9,6 +9,7 @@ class PresentationSetting extends Model
     protected $fillable = [
         'profile_image',
         'logo',
+        'cover_image',
         'name',
         'title',
         'email',

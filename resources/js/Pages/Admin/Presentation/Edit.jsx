@@ -9,6 +9,9 @@ export default function Edit({ setting }) {
     const [logoPreview, setLogoPreview] = useState(
         setting.logo ? `${window.storageUrl}${setting.logo}` : null
     );
+    const [coverPreview, setCoverPreview] = useState(
+        setting.cover_image ? `${window.storageUrl}${setting.cover_image}` : null
+    );
     const [brandPreviews, setBrandPreviews] = useState([]);
 
     const { data, setData, post, processing, errors, wasSuccessful } = useForm({
@@ -31,6 +34,7 @@ export default function Edit({ setting }) {
         
         profile_image: null,
         logo: null,
+        cover_image: null,
         
         new_brands_images: [],
         kept_brands_images: setting.brands_images || [],
@@ -45,6 +49,7 @@ export default function Edit({ setting }) {
                 // Clear file state and new preview objects
                 setData('profile_image', null);
                 setData('logo', null);
+                setData('cover_image', null);
                 setData('new_brands_images', []);
                 setBrandPreviews([]);
                 alert('¡Tarjeta de presentación guardada con éxito!');
@@ -144,6 +149,30 @@ export default function Edit({ setting }) {
                                                 />
                                             </div>
                                             {errors.logo && <div className="text-red-500 text-xs mt-1">{errors.logo}</div>}
+                                        </div>
+
+                                        {/* Cover Photo */}
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Imagen de Portada (Fondo)</label>
+                                            <div className="flex items-center gap-4">
+                                                {coverPreview && (
+                                                    <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                                                        <img src={coverPreview} alt="Portada" className="h-full w-full object-cover" />
+                                                    </div>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    onChange={(e) => {
+                                                        const file = e.target.files[0];
+                                                        setData('cover_image', file);
+                                                        if (file) {
+                                                            setCoverPreview(URL.createObjectURL(file));
+                                                        }
+                                                    }}
+                                                    className="w-full text-xs text-gray-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                                />
+                                            </div>
+                                            {errors.cover_image && <div className="text-red-500 text-xs mt-1">{errors.cover_image}</div>}
                                         </div>
                                     </div>
                                 </div>

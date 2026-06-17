@@ -90,6 +90,7 @@ class PresentationController extends Controller
             
             'profile_image' => 'nullable|image|max:10240',
             'logo' => 'nullable|image|max:10240',
+            'cover_image' => 'nullable|image|max:10240',
             
             'new_brands_images' => 'nullable|array',
             'new_brands_images.*' => 'image|max:10240',
@@ -115,6 +116,16 @@ class PresentationController extends Controller
             $data['logo'] = $this->imageService->store($request->file('logo'), 'presentation', 400, 400);
         } else {
             $data['logo'] = $setting->logo;
+        }
+
+        // Upload Cover Image
+        if ($request->hasFile('cover_image')) {
+            if ($setting->cover_image) {
+                Storage::disk('public')->delete($setting->cover_image);
+            }
+            $data['cover_image'] = $this->imageService->store($request->file('cover_image'), 'presentation', 1200, 800);
+        } else {
+            $data['cover_image'] = $setting->cover_image;
         }
 
         // Manage Brands Images
