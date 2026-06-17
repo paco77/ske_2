@@ -286,8 +286,11 @@ export default function Index({ products, categories, subcategories, brands }) {
                                                 multiple
                                                 onChange={(e) => {
                                                     const files = Array.from(e.target.files);
-                                                    setData('images', files);
-                                                    setGalleryPreviews(files.map(f => URL.createObjectURL(f)));
+                                                    if (files.length > 0) {
+                                                        setData('images', [...(data.images || []), ...files]);
+                                                        setGalleryPreviews(prev => [...prev, ...files.map(f => URL.createObjectURL(f))]);
+                                                        e.target.value = ''; // Reset UI input value
+                                                    }
                                                 }}
                                                 className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100 mb-4"
                                             />
@@ -308,6 +311,18 @@ export default function Index({ products, categories, subcategories, brands }) {
                                                     {galleryPreviews.map((preview, idx) => (
                                                         <div key={`new-${idx}`} className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-blue-200 bg-blue-50">
                                                             <img src={preview} alt="New Preview" className="h-full w-full object-contain" />
+                                                            <button 
+                                                                type="button" 
+                                                                onClick={() => {
+                                                                    URL.revokeObjectURL(preview);
+                                                                    const newImages = data.images.filter((_, i) => i !== idx);
+                                                                    setData('images', newImages);
+                                                                    setGalleryPreviews(galleryPreviews.filter((_, i) => i !== idx));
+                                                                }}
+                                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 z-10"
+                                                            >
+                                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                                                            </button>
                                                             <span className="absolute bottom-0 left-0 right-0 bg-blue-500 text-white text-[8px] text-center py-0.5">NUEVA</span>
                                                         </div>
                                                     ))}

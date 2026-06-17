@@ -90,11 +90,23 @@ export default function Products({ subcategory, products, contact }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalImageIndex, setModalImageIndex] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const filteredProducts = products.filter(product =>
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()))
     );
+
+    const itemsPerPage = 16;
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const activePage = currentPage > totalPages ? 1 : currentPage;
+    const startIndex = (activePage - 1) * itemsPerPage;
+    const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
+    const changePage = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 250, behavior: 'smooth' });
+    };
 
     const openModal = (product) => {
         setSelectedProduct(product);
@@ -139,7 +151,10 @@ export default function Products({ subcategory, products, contact }) {
                                     type="text"
                                     placeholder="Buscar producto por nombre..."
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={(e) => {
+                                        setSearchQuery(e.target.value);
+                                        setCurrentPage(1);
+                                    }}
                                     className="block w-full pl-10 pr-3 py-2 border border-gray-200 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 sm:text-sm"
                                 />
                             </div>
@@ -149,11 +164,55 @@ export default function Products({ subcategory, products, contact }) {
                         </div>
                     </div>
 
-                    {filteredProducts.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            {filteredProducts.map((product, index) => (
-                                <ProductCard key={product.id} product={product} index={index} contact={contact} openModal={openModal} />
-                            ))}
+                    {paginatedProducts.length > 0 ? (
+                        <div>
+                            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:grid-cols-4">
+                                {paginatedProducts.map((product, index) => (
+                                    <ProductCard key={product.id} product={product} index={index} contact={contact} openModal={openModal} />
+                                ))}
+                            </div>
+
+                            {totalPages > 1 && (
+                                <div className="mt-16 flex items-center justify-center space-x-2">
+                                    <button
+                                        onClick={() => changePage(Math.max(activePage - 1, 1))}
+                                        disabled={activePage === 1}
+                                        className={`rounded-xl px-4 py-2 text-sm font-semibold border transition-all ${
+                                            activePage === 1
+                                                ? 'bg-gray-100 text-gray-400 border-gray-100 cursor-not-allowed'
+                                                : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200 active:scale-95'
+                                        }`}
+                                    >
+                                        Anterior
+                                    </button>
+                                    
+                                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                        <button
+                                            key={page}
+                                            onClick={() => changePage(page)}
+                                            className={`h-10 w-10 rounded-xl text-sm font-semibold border transition-all active:scale-95 ${
+                                                activePage === page
+                                                    ? 'bg-gray-900 text-white border-gray-900 shadow-md shadow-gray-950/10'
+                                                    : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200'
+                                            }`}
+                                        >
+                                            {page}
+                                        </button>
+                                    ))}
+                                    
+                                    <button
+                                        onClick={() => changePage(Math.min(activePage + 1, totalPages))}
+                                        disabled={activePage === totalPages}
+                                        className={`rounded-xl px-4 py-2 text-sm font-semibold border transition-all ${
+                                            activePage === totalPages
+                                                ? 'bg-gray-100 text-gray-400 border-gray-100 cursor-not-allowed'
+                                                : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200 active:scale-95'
+                                        }`}
+                                    >
+                                        Siguiente
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="flex flex-col items-center justify-center py-32 text-center">
@@ -170,7 +229,10 @@ export default function Products({ subcategory, products, contact }) {
                             </p>
                             {searchQuery && (
                                 <button
-                                    onClick={() => setSearchQuery('')}
+                                    onClick={() => {
+                                        setSearchQuery('');
+                                        setCurrentPage(1);
+                                    }}
                                     className="mt-4 text-gray-900 font-bold hover:underline"
                                 >
                                     Limpiar búsqueda
