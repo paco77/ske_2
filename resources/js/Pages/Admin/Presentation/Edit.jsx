@@ -52,7 +52,6 @@ export default function Edit({ setting }) {
                 setData('cover_image', null);
                 setData('new_brands_images', []);
                 setBrandPreviews([]);
-                alert('¡Tarjeta de presentación guardada con éxito!');
             },
         });
     };
