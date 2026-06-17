@@ -67,6 +67,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Misión y Visión
                                 </NavLink>
                                 <NavLink
+                                    href={route('admin.presentation.edit')}
+                                    active={route().current('admin.presentation.edit')}
+                                >
+                                    Presentación
+                                </NavLink>
+                                <NavLink
                                     href={route('admin.users.index')}
                                     active={route().current('admin.users.index')}
                                 >
@@ -211,6 +217,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('admin.about.index')}
                         >
                             Misión y Visión
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('admin.presentation.edit')}
+                            active={route().current('admin.presentation.edit')}
+                        >
+                            Presentación
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href={route('admin.users.index')}

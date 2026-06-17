@@ -111,5 +111,25 @@ class DatabaseSeeder extends Seeder
             'mission' => 'Proveer soluciones integrales en componentes electrónicos y suministros industriales de la más alta calidad, impulsando la eficiencia y el crecimiento de nuestros clientes.',
             'vision' => 'Ser la empresa líder y referente en el mercado industrial, reconocida por nuestra innovación, confiabilidad y compromiso con la excelencia en el servicio.',
         ]);
+
+        // Presentation Settings
+        \App\Models\PresentationSetting::create([
+            'profile_image' => null,
+            'logo' => null,
+            'name' => 'Lic. Lizbeth Sigala',
+            'title' => 'Agente de Ventas y Proyectos',
+            'email' => 've2@jinsa.com.mx',
+            'whatsapp' => '6182779868',
+            'phone' => '6188140846',
+            'about_title' => 'Acerca de Nosotros',
+            'about_text' => 'En SKE Componentes y Suministros nos dedicamos a proveer soluciones integrales de instrumentación industrial, componentes electrónicos y suministros para la pequeña, mediana y gran empresa, garantizando la calidad y confianza en cada uno de nuestros productos.',
+            'contact_title' => 'Información de Contacto',
+            'contact_email' => 've2@jinsa.com.mx',
+            'contact_phone' => '6188140846',
+            'contact_address' => 'Av. Industrial #123, Col. Centro, Durango, Dgo.',
+            'brands_images' => [],
+            'website_link' => 'https://skecomponent.mx/',
+            'website_button_text' => 'Visitar Sitio Oficial',
+        ]);
     }
 }

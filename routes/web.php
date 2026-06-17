@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\PresentationController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -16,6 +17,7 @@ Route::get('/', [HomeController::class , 'index'])->name('home');
 Route::get('/productos/{subcategory}', [HomeController::class , 'products'])->name('products');
 Route::get('/marcas/{brand}/productos', [HomeController::class , 'brandProducts'])->name('brand.products');
 Route::get('/categorias/{category}/productos', [HomeController::class , 'categoryProducts'])->name('category.products');
+Route::get('/presentacion', [PresentationController::class , 'show'])->name('presentation.show');
 
 // ─── Admin Routes (Auth Required) ────────────────────────────────
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {
@@ -55,6 +57,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Mission & Vision
     Route::get('/mision-vision', [\App\Http\Controllers\Admin\AboutController::class , 'index'])->name('about.index');
     Route::post('/mision-vision', [\App\Http\Controllers\Admin\AboutController::class , 'update'])->name('about.update');
+
+    // Presentation Settings
+    Route::get('/presentacion', [PresentationController::class, 'edit'])->name('presentation.edit');
+    Route::post('/presentacion', [PresentationController::class, 'update'])->name('presentation.update');
 
     // Users
     Route::get('/usuarios', [UserController::class , 'index'])->name('users.index');
