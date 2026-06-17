@@ -245,19 +245,21 @@ END:VCARD`;
                             <span className="w-1.5 h-5 bg-blue-600 rounded-full" />
                             <h2 className="text-base font-extrabold text-slate-950">Marcas que manejamos</h2>
                         </div>
-                        <div className="grid grid-cols-3 gap-4">
-                            {brands_images.map((image, idx) => (
-                                <div
-                                    key={idx}
-                                    className="bg-white border border-slate-100 rounded-2xl p-2.5 flex items-center justify-center h-16 shadow-sm hover:shadow-md transition-shadow"
-                                >
-                                    <img
-                                        src={`${window.storageUrl}${image}`}
-                                        alt={`Marca ${idx}`}
-                                        className="max-h-full max-w-full object-contain"
-                                    />
-                                </div>
-                            ))}
+                        <div className="max-h-[380px] overflow-y-auto pr-1 scrollbar-thin">
+                            <div className="grid grid-cols-2 gap-4">
+                                {brands_images.map((image, idx) => (
+                                    <div
+                                        key={idx}
+                                        className="bg-white border border-slate-200/80 rounded-2xl p-4 flex items-center justify-center h-28 shadow-sm hover:shadow-md transition-shadow"
+                                    >
+                                        <img
+                                            src={`${window.storageUrl}${image}`}
+                                            alt={`Marca ${idx}`}
+                                            className="max-h-full max-w-full object-contain"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 )}
