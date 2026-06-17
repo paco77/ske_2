@@ -51,12 +51,12 @@ END:VCARD`;
             <Head title={`${name} | Tarjeta de Presentación`} />
 
             <div className="w-full max-w-md flex flex-col gap-6">
-                
+
                 {/* CARD 1: Profile Card */}
                 <div className="bg-[#273549] rounded-[28px] shadow-xl overflow-hidden relative flex flex-col">
-                    
+
                     {/* Cover Banner */}
-                    <div className="relative h-64 w-full overflow-hidden bg-slate-800">
+                    <div className="relative h-[340px] w-full overflow-hidden bg-slate-800">
                         <img
                             src={cover_image ? `${window.storageUrl}${cover_image}` : 'https://images.unsplash.com/photo-1581094288338-2314dddb7eed?auto=format&fit=crop&w=1200&q=80'}
                             alt="Cover"
@@ -70,7 +70,7 @@ END:VCARD`;
 
                         {/* Top-Right Mascot/Brand Hexagon Logo */}
                         {logo && (
-                            <div 
+                            <div
                                 className="absolute top-6 right-6 w-12 h-14 bg-white flex items-center justify-center p-1.5 shadow-md"
                                 style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
                             >
@@ -90,18 +90,18 @@ END:VCARD`;
                         </div>
 
                         {/* Diagonal bottom-border cover divider */}
-                        <div 
+                        <div
                             className="absolute bottom-0 left-0 w-full h-16 bg-[#273549] border-t-4 border-blue-600 transform origin-bottom-left -skew-y-6 translate-y-6"
                         />
                     </div>
 
                     {/* Overlapping Hexagon Profile Photo */}
                     <div className="relative px-6">
-                        <div 
+                        <div
                             className="absolute -top-14 left-6 w-32 h-36 bg-white flex items-center justify-center p-1 shadow-xl z-20"
                             style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
                         >
-                            <div 
+                            <div
                                 className="w-full h-full bg-slate-100 flex items-center justify-center overflow-hidden p-1.5"
                                 style={{ clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)' }}
                             >
@@ -126,16 +126,7 @@ END:VCARD`;
 
                     {/* Circular Actions Buttons Row */}
                     <div className="flex items-center justify-start gap-4 px-6 mt-6 pb-8">
-                        {/* Button 1: Download Contact */}
-                        <button
-                            onClick={downloadVCard}
-                            className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg transition-all active:scale-90"
-                            title="Guardar Contacto"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                            </svg>
-                        </button>
+
 
                         {/* Button 2: Email */}
                         {email && (
@@ -194,7 +185,7 @@ END:VCARD`;
 
                 {/* CARD 3: Contact Us Details */}
                 <div className="bg-white rounded-[28px] p-6 shadow-md">
-                    
+
                     {/* Header */}
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center flex-shrink-0">
