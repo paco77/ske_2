@@ -121,9 +121,17 @@ export default function Navbar() {
                                                             <button
                                                                 key={item.id}
                                                                 onClick={(e) => { e.preventDefault(); openModal(item); }}
-                                                                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-bg-gray-50 hover:text-gray-900 transition-colors"
+                                                                className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors"
                                                             >
-                                                                {item.name}
+                                                                {item.image && (
+                                                                    <img 
+                                                                        src={`${window.storageUrl}${item.image}`} 
+                                                                        alt={item.name} 
+                                                                        className="w-8 h-8 object-cover rounded mr-3 shrink-0 bg-gray-100" 
+                                                                        onError={(e) => (e.target.src = 'https://via.placeholder.com/32?text=' + item.name.charAt(0))} 
+                                                                    />
+                                                                )}
+                                                                <span className="truncate">{item.name}</span>
                                                             </button>
                                                         ) : (
                                                             <Link
@@ -221,9 +229,17 @@ export default function Navbar() {
                                                             <button
                                                                 key={item.id}
                                                                 onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); openModal(item); }}
-                                                                className="text-left text-gray-600 hover:text-gray-900 text-sm py-1"
+                                                                className="flex items-center text-left text-gray-600 hover:text-gray-900 text-sm py-2"
                                                             >
-                                                                {item.name}
+                                                                {item.image && (
+                                                                    <img 
+                                                                        src={`${window.storageUrl}${item.image}`} 
+                                                                        alt={item.name} 
+                                                                        className="w-8 h-8 object-cover rounded mr-3 shrink-0 bg-gray-100" 
+                                                                        onError={(e) => (e.target.src = 'https://via.placeholder.com/32?text=' + item.name.charAt(0))} 
+                                                                    />
+                                                                )}
+                                                                <span>{item.name}</span>
                                                             </button>
                                                         ) : (
                                                             <Link
