@@ -26,6 +26,22 @@ class HomeController extends Controller
         ]);
     }
 
+    public function allProducts()
+    {
+        $products = Product::where('is_active', true)->with('brand')->get();
+
+        $pseudoSubcategory = [
+            'name' => 'Todos los productos',
+            'category' => ['name' => 'Catálogo']
+        ];
+
+        return Inertia::render('Products', [
+            'subcategory' => $pseudoSubcategory,
+            'products' => $products,
+            'contact' => ContactInfo::first(),
+        ]);
+    }
+
     public function products(Subcategory $subcategory)
     {
         $subcategory->load(['category', 'products' => fn($q) => $q->where('is_active', true)->with('brand')]);

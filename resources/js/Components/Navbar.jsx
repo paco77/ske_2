@@ -47,7 +47,7 @@ export default function Navbar() {
 
     const navLinks = [
         { name: 'Inicio', href: '/#inicio' },
-        { name: 'Productos', href: '#', hasDropdown: true, dropdownItems: global_products, isProduct: true, emptyMessage: 'No hay productos' },
+        { name: 'Productos', href: '/productos', hasDropdown: true, dropdownItems: global_products, isProduct: true, emptyMessage: 'No hay productos' },
         { name: 'Marcas', href: '/#marcas', hasDropdown: true, dropdownItems: global_brands, routeName: 'brand.products', emptyMessage: 'No hay marcas' },
         { name: 'Categorías', href: '/#categorias', hasDropdown: true, dropdownItems: global_categories, routeName: 'category.products', emptyMessage: 'No hay categorías' },
         { name: 'Contacto', href: '/#contacto' },
@@ -115,6 +115,14 @@ export default function Navbar() {
                                                 />
                                             </div>
                                             <div className="max-h-[350px] overflow-y-auto">
+                                                {link.isProduct && (
+                                                    <Link
+                                                        href={link.href}
+                                                        className="block px-4 py-2 font-bold text-sm text-gray-900 hover:bg-gray-50 border-b border-gray-100"
+                                                    >
+                                                        Ver todos los productos
+                                                    </Link>
+                                                )}
                                                 {link.dropdownItems && link.dropdownItems.filter(item => item.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).length > 0 ? (
                                                     link.dropdownItems.filter(item => item.name.toLowerCase().includes(menuSearchQuery.toLowerCase())).map((item) => (
                                                         link.isProduct ? (
@@ -204,15 +212,13 @@ export default function Navbar() {
                                     )}
                                     {link.hasDropdown && expandedMenu === link.name && (
                                         <div className="mt-2 ml-4 flex flex-col space-y-2 border-l-2 border-gray-100 pl-4 max-h-56 overflow-y-auto">
-                                            {!link.isProduct && (
-                                                <a
-                                                    href={link.href}
-                                                    onClick={() => setMobileMenuOpen(false)}
-                                                    className="text-gray-900 font-bold text-sm py-2 mb-1 border-b border-gray-100"
-                                                >
-                                                    Ver {link.name.toLowerCase()}
-                                                </a>
-                                            )}
+                                            <a
+                                                href={link.href}
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className="text-gray-900 font-bold text-sm py-2 mb-1 border-b border-gray-100"
+                                            >
+                                                Ver {link.name.toLowerCase()}
+                                            </a>
                                             <div className="pr-4 mb-2">
                                                 <input
                                                     type="text"

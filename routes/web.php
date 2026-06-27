@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 
 // ─── Public Routes ───────────────────────────────────────────────
 Route::get('/', [HomeController::class , 'index'])->name('home');
+Route::get('/productos', [HomeController::class, 'allProducts'])->name('allProducts');
 Route::get('/productos/{subcategory}', [HomeController::class , 'products'])->name('products');
 Route::get('/marcas/{brand}/productos', [HomeController::class , 'brandProducts'])->name('brand.products');
 Route::get('/categorias/{category}/productos', [HomeController::class , 'categoryProducts'])->name('category.products');
