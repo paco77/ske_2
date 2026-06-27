@@ -38,6 +38,8 @@ class HandleInertiaRequests extends Middleware
             'app_logo' => \App\Models\AboutInfo::first()?->logo,
             'global_brands' => \App\Models\Brand::where('is_active', true)->orderBy('order')->get(['id', 'name']),
             'global_categories' => \App\Models\Category::where('is_active', true)->orderBy('order')->get(['id', 'name']),
+            'global_products' => \App\Models\Product::with(['brand'])->where('is_active', true)->get(['id', 'name', 'description', 'image', 'images', 'brand_id']),
+            'global_contact' => \App\Models\ContactInfo::first(),
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),

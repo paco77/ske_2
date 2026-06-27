@@ -21,11 +21,11 @@ class PresentationController extends Controller
     public function show()
     {
         $setting = PresentationSetting::firstOrCreate(['id' => 1], [
-            'name' => 'Lic. Lizbeth Sigala',
+            'name' => 'Lic. ',
             'title' => 'Agente de Ventas y Proyectos',
-            'email' => 've2@jinsa.com.mx',
-            'whatsapp' => '6182779868',
-            'phone' => '6188140846',
+            'email' => '',
+            'whatsapp' => '',
+            'phone' => '',
             'about_title' => 'Acerca de Nosotros',
             'about_text' => 'En SKE Componentes y Suministros nos dedicamos a proveer soluciones integrales de instrumentación industrial, componentes electrónicos y suministros para la pequeña, mediana y gran empresa, garantizando la calidad y confianza en cada uno de nuestros productos.',
             'contact_title' => 'Información de Contacto',
@@ -76,22 +76,22 @@ class PresentationController extends Controller
             'email' => 'nullable|email|max:255',
             'whatsapp' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
-            
+
             'about_title' => 'required|string|max:255',
             'about_text' => 'nullable|string',
-            
+
             'contact_title' => 'required|string|max:255',
             'contact_email' => 'nullable|email|max:255',
             'contact_phone' => 'nullable|string|max:255',
             'contact_address' => 'nullable|string',
-            
+
             'website_link' => 'nullable|url|max:255',
             'website_button_text' => 'nullable|string|max:255',
-            
+
             'profile_image' => 'nullable|image|max:10240',
             'logo' => 'nullable|image|max:10240',
             'cover_image' => 'nullable|image|max:10240',
-            
+
             'new_brands_images' => 'nullable|array',
             'new_brands_images.*' => 'image|max:10240',
             'kept_brands_images' => 'nullable|array',
