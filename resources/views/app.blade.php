@@ -27,7 +27,7 @@
               gtag('config', '{{ config('services.google.analytics_id') }}');
             </script>
         @endif
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>SKE Component | Componentes Electrónicos Industriales en México</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

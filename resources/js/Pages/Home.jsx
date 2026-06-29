@@ -9,7 +9,7 @@ import ContactSection from '@/Components/ContactSection';
 export default function Home({ sliders, brands, categories, about, contact }) {
     return (
         <div className="min-h-screen bg-gray-50 font-sans antialiased text-gray-900 scroll-smooth">
-            <Head title="SKE Componentes y Suministros | Soluciones Industriales" />
+            <Head title="SKE Component | Componentes Electrónicos Industriales en México" />
 
             <Navbar />
 
