@@ -18,7 +18,8 @@ Route::get('/', [HomeController::class , 'index'])->name('home');
 Route::get('/productos', [HomeController::class, 'allProducts'])->name('allProducts');
 Route::get('/productos/{subcategory}', [HomeController::class , 'products'])->name('products');
 Route::get('/marcas/{brand}/productos', [HomeController::class , 'brandProducts'])->name('brand.products');
-Route::get('/categorias/{category}/productos', [HomeController::class , 'categoryProducts'])->name('category.products');
+Route::get('/categorias/{category:slug}/productos', [HomeController::class , 'categoryProducts'])->name('category.products');
+Route::get('/producto/{product:slug}', [HomeController::class, 'showProduct'])->name('product.show');
 Route::get('/presentacion', [PresentationController::class , 'show'])->name('presentation.show');
 
 // ─── Admin Routes (Auth Required) ────────────────────────────────

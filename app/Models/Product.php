@@ -7,7 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Product extends Model
 {
-    protected $fillable = ['name', 'description', 'image', 'images', 'category_id', 'subcategory_id', 'brand_id', 'is_active'];
+    protected $fillable = ['name', 'slug', 'meta_title', 'meta_description', 'description', 'image', 'images', 'category_id', 'subcategory_id', 'brand_id', 'is_active'];
+
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = \Illuminate\Support\Str::slug($product->name);
+            }
+        });
+
+        static::updating(function ($product) {
+            if (empty($product->slug)) {
+                $product->slug = \Illuminate\Support\Str::slug($product->name);
+            }
+        });
+    }
 
     protected $casts = [
         'is_active' => 'boolean',

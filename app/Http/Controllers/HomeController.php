@@ -85,4 +85,16 @@ class HomeController extends Controller
             'contact' => ContactInfo::first(),
         ]);
     }
+
+    public function showProduct(Product $product)
+    {
+        abort_if(!$product->is_active, 404);
+        
+        $product->load(['category', 'subcategory', 'brand']);
+
+        return Inertia::render('ProductView', [
+            'product' => $product,
+            'contact' => ContactInfo::first(),
+        ]);
+    }
 }

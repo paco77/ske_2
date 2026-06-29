@@ -20,12 +20,9 @@ const ProductCard = ({ product, index, contact, openModal }) => {
     };
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
+        <Link
+            href={route('product.show', product.slug || product.id)}
             className="group relative flex flex-col rounded-2xl bg-white p-4 shadow-sm ring-1 ring-gray-200 transition-all hover:shadow-xl hover:ring-gray-900/10 cursor-pointer"
-            onClick={() => openModal(product)}
         >
             <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-gray-100">
                 <img
@@ -70,18 +67,14 @@ const ProductCard = ({ product, index, contact, openModal }) => {
                 </p>
 
                 <div className="mt-auto pt-6">
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(`https://wa.me/${contact.whatsapp}?text=Hola, me interesa el producto: ${product.name}`, '_blank');
-                        }}
+                    <span
                         className="flex w-full items-center justify-center rounded-xl bg-gray-900 py-3 text-sm font-bold text-white transition-all hover:bg-gray-900 active:scale-95"
                     >
-                        Solicitar Cotización
-                    </button>
+                        Ver Detalles
+                    </span>
                 </div>
             </div>
-        </motion.div>
+        </Link>
     );
 };
 
@@ -118,9 +111,43 @@ export default function Products({ subcategory, products, contact }) {
         setIsModalOpen(false);
         setTimeout(() => setSelectedProduct(null), 200);
     };
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Inicio",
+                "item": route('home')
+            },
+            {
+                "@type": "ListItem",
+                "position": 2,
+                "name": subcategory.category?.name || "Catálogo",
+                "item": route('allProducts')
+            },
+            {
+                "@type": "ListItem",
+                "position": 3,
+                "name": subcategory.name,
+                "item": window.location.href
+            }
+        ]
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 font-sans antialiased text-gray-900">
-            <Head title={`${subcategory.name} | SKE Componentes`} />
+            <Head>
+                <title>{subcategory.meta_title || `${subcategory.name} | SKE Componentes`}</title>
+                <meta name="description" content={subcategory.meta_description || `Catálogo de productos para ${subcategory.name}`} head-key="description" />
+                <meta property="og:title" content={subcategory.meta_title || subcategory.name} />
+                <meta property="og:description" content={subcategory.meta_description || `Explora nuestros productos de ${subcategory.name}`} />
+                <meta property="og:url" content={typeof window !== 'undefined' ? window.location.href : ''} />
+                <script type="application/ld+json">
+                    {JSON.stringify(breadcrumbSchema)}
+                </script>
+            </Head>
 
             <Navbar />
 

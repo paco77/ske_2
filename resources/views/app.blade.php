@@ -8,11 +8,13 @@
             $seo = \App\Models\SeoSetting::first();
         @endphp
         @if($seo && $seo->description)
-            <meta name="description" content="{{ $seo->description }}">
+            <meta name="description" content="{{ $seo->description }}" head-key="description">
         @endif
         @if($seo && $seo->keywords)
-            <meta name="keywords" content="{{ $seo->keywords }}">
+            <meta name="keywords" content="{{ $seo->keywords }}" head-key="keywords">
         @endif
+        
+        <link rel="canonical" href="{{ url()->current() }}" head-key="canonical">
 
         @if(config('services.google.analytics_id'))
             <!-- Google tag (gtag.js) -->
