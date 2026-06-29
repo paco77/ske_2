@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SliderController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\PresentationController;
+use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -62,6 +63,10 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     // Presentation Settings
     Route::get('/presentacion', [PresentationController::class, 'edit'])->name('presentation.edit');
     Route::post('/presentacion', [PresentationController::class, 'update'])->name('presentation.update');
+
+    // SEO Settings
+    Route::get('/seo', [SeoController::class, 'edit'])->name('seo.edit');
+    Route::post('/seo', [SeoController::class, 'update'])->name('seo.update');
 
     // Users
     Route::get('/usuarios', [UserController::class , 'index'])->name('users.index');

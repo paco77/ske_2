@@ -4,6 +4,27 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
+        @php
+            $seo = \App\Models\SeoSetting::first();
+        @endphp
+        @if($seo && $seo->description)
+            <meta name="description" content="{{ $seo->description }}">
+        @endif
+        @if($seo && $seo->keywords)
+            <meta name="keywords" content="{{ $seo->keywords }}">
+        @endif
+
+        @if(config('services.google.analytics_id'))
+            <!-- Google tag (gtag.js) -->
+            <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google.analytics_id') }}"></script>
+            <script>
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+
+              gtag('config', '{{ config('services.google.analytics_id') }}');
+            </script>
+        @endif
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <!-- Fonts -->
@@ -16,6 +37,7 @@
         @viteReactRefresh
         @vite(['resources/js/app.jsx', "resources/js/Pages/{$page['component']}.jsx"])
         @inertiaHead
+        <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}">
     </head>
     <body class="font-sans antialiased">
         @inertia

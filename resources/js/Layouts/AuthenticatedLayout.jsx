@@ -74,6 +74,12 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Presentación
                                 </NavLink>
                                 <NavLink
+                                    href={route('admin.seo.edit')}
+                                    active={route().current('admin.seo.edit')}
+                                >
+                                    SEO
+                                </NavLink>
+                                <NavLink
                                     href={route('admin.users.index')}
                                     active={route().current('admin.users.index')}
                                 >
@@ -224,6 +230,12 @@ export default function AuthenticatedLayout({ header, children }) {
                             active={route().current('admin.presentation.edit')}
                         >
                             Presentación
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink
+                            href={route('admin.seo.edit')}
+                            active={route().current('admin.seo.edit')}
+                        >
+                            SEO
                         </ResponsiveNavLink>
                         <ResponsiveNavLink
                             href={route('admin.users.index')}
