@@ -9,6 +9,7 @@ use App\Models\Subcategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use App\Models\SeoSetting;
 
 use App\Services\ImageService;
 
@@ -59,6 +60,8 @@ class ProductController extends Controller
 
         Product::create($data);
 
+        $this->updateSeoKeywords($request->input('seo_keywords'));
+
         return redirect()->back()->with('success', 'Producto creado.');
     }
 
@@ -108,6 +111,8 @@ class ProductController extends Controller
 
         $product->update($data);
 
+        $this->updateSeoKeywords($request->input('seo_keywords'));
+
         return redirect()->back()->with('success', 'Producto actualizado.');
     }
 
@@ -124,5 +129,26 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->back()->with('success', 'Producto eliminado.');
+    }
+
+    protected function updateSeoKeywords($keywords)
+    {
+        if (empty(trim((string)$keywords))) {
+            return;
+        }
+
+        $seoSetting = SeoSetting::firstOrCreate(['id' => 1], [
+            'keywords' => '',
+            'description' => ''
+        ]);
+
+        $existing = array_map('trim', explode(',', $seoSetting->keywords ?? ''));
+        $new = array_map('trim', explode(',', $keywords));
+        
+        $merged = array_unique(array_filter(array_merge($existing, $new)));
+
+        $seoSetting->update([
+            'keywords' => implode(', ', $merged)
+        ]);
     }
 }

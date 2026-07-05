@@ -14,6 +14,7 @@ export default function Index({ categories }) {
         name: '',
         image: null,
         order: 0,
+        seo_keywords: '',
         is_active: true,
         _method: 'POST',
     });
@@ -22,6 +23,7 @@ export default function Index({ categories }) {
         name: '',
         image: null,
         order: 0,
+        seo_keywords: '',
         is_active: true,
         _method: 'POST',
     });
@@ -148,6 +150,16 @@ export default function Index({ categories }) {
                                             className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
                                         />
                                     </div>
+                                    <div>
+                                        <label className="block text-sm font-bold text-gray-700 mb-2">Keywords SEO (separadas por coma)</label>
+                                        <input
+                                            type="text"
+                                            value={categoryForm.data.seo_keywords}
+                                            onChange={(e) => categoryForm.setData('seo_keywords', e.target.value)}
+                                            placeholder=""
+                                            className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
+                                        />
+                                    </div>
                                     <div className="flex items-center pt-8">
                                         <input
                                             type="checkbox"
@@ -213,6 +225,16 @@ export default function Index({ categories }) {
                                             />
                                         </div>
                                     </div>
+                                    <div className="col-span-1 md:col-span-2">
+                                        <label className="block text-sm font-bold text-gray-700 mb-2">Keywords SEO (separadas por coma)</label>
+                                        <input
+                                            type="text"
+                                            value={subcategoryForm.data.seo_keywords}
+                                            onChange={(e) => subcategoryForm.setData('seo_keywords', e.target.value)}
+                                            placeholder=""
+                                            className="w-full rounded-xl border-gray-200 focus:ring-gray-900 focus:border-gray-900"
+                                        />
+                                    </div>
                                 </div>
                                 <div className="mt-8 flex justify-end space-x-4">
                                     <button
@@ -267,6 +289,7 @@ export default function Index({ categories }) {
                                                     name: category.name,
                                                     image: null,
                                                     order: category.order,
+                                                    seo_keywords: '',
                                                     is_active: !!category.is_active,
                                                     _method: 'POST',
                                                 });

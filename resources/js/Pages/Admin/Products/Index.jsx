@@ -18,6 +18,7 @@ export default function Index({ products, categories, subcategories, brands }) {
         category_id: '',
         subcategory_id: '',
         brand_id: '',
+        seo_keywords: '',
         is_active: true,
         _method: 'POST',
     });
@@ -63,6 +64,7 @@ export default function Index({ products, categories, subcategories, brands }) {
             category_id: product.category_id || (product.subcategory?.category_id || ''),
             subcategory_id: product.subcategory_id || '',
             brand_id: product.brand_id || '',
+            seo_keywords: '',
             is_active: !!product.is_active,
             _method: 'POST',
         });
@@ -200,6 +202,17 @@ export default function Index({ products, categories, subcategories, brands }) {
                                             ></textarea>
                                             {errors.description && <div className="text-red-500 text-xs mt-1">{errors.description}</div>}
                                         </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Keywords SEO (separadas por coma)</label>
+                                            <input
+                                                type="text"
+                                                value={data.seo_keywords}
+                                                onChange={(e) => setData('seo_keywords', e.target.value)}
+                                                placeholder=""
+                                                className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
+                                            />
+                                            <p className="text-xs text-gray-500 mt-1">Estas palabras se agregarán automáticamente a la configuración global de SEO.</p>
+                                        </div>
                                     </div>
                                     <div className="space-y-6">
                                         <div className="grid grid-cols-2 gap-4">
@@ -299,8 +312,8 @@ export default function Index({ products, categories, subcategories, brands }) {
                                                     {data.kept_images.map((img, idx) => (
                                                         <div key={`kept-${idx}`} className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
                                                             <img src={`${window.storageUrl}${img}`} alt="Preview" className="h-full w-full object-contain" />
-                                                            <button 
-                                                                type="button" 
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => setData('kept_images', data.kept_images.filter(i => i !== img))}
                                                                 className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
                                                             >
@@ -311,8 +324,8 @@ export default function Index({ products, categories, subcategories, brands }) {
                                                     {galleryPreviews.map((preview, idx) => (
                                                         <div key={`new-${idx}`} className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-xl border border-blue-200 bg-blue-50">
                                                             <img src={preview} alt="New Preview" className="h-full w-full object-contain" />
-                                                            <button 
-                                                                type="button" 
+                                                            <button
+                                                                type="button"
                                                                 onClick={() => {
                                                                     URL.revokeObjectURL(preview);
                                                                     const newImages = data.images.filter((_, i) => i !== idx);
