@@ -21,6 +21,7 @@ Route::get('/marcas/{brand}/productos', [HomeController::class , 'brandProducts'
 Route::get('/categorias/{category:slug}/productos', [HomeController::class , 'categoryProducts'])->name('category.products');
 Route::get('/producto/{product:slug}', [HomeController::class, 'showProduct'])->name('product.show');
 Route::get('/presentacion', [PresentationController::class , 'show'])->name('presentation.show');
+Route::get('/api/productos/serie/{serie}', [HomeController::class, 'getProductsBySerie']);
 
 // ─── Admin Routes (Auth Required) ────────────────────────────────
 Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(function () {

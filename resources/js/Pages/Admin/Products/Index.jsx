@@ -11,6 +11,7 @@ export default function Index({ products, categories, subcategories, brands }) {
 
     const { data, setData, post, delete: destroy, processing, errors, reset } = useForm({
         name: '',
+        serie: '',
         description: '',
         image: null,
         images: [],
@@ -57,6 +58,7 @@ export default function Index({ products, categories, subcategories, brands }) {
         setEditingProduct(product);
         setData({
             name: product.name,
+            serie: product.serie || '',
             description: product.description || '',
             image: null,
             images: [],
@@ -191,6 +193,16 @@ export default function Index({ products, categories, subcategories, brands }) {
                                                 required
                                             />
                                             {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Serie</label>
+                                            <input
+                                                type="text"
+                                                value={data.serie}
+                                                onChange={(e) => setData('serie', e.target.value)}
+                                                className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
+                                            />
+                                            {errors.serie && <div className="text-red-500 text-xs mt-1">{errors.serie}</div>}
                                         </div>
                                         <div>
                                             <label className="block text-sm font-bold text-gray-700 mb-2">Descripción</label>

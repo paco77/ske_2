@@ -21,6 +21,7 @@ class HomeController extends Controller
             ->with(['subcategories' => fn($q) => $q->where('is_active', true)->orderBy('order')])
             ->orderBy('order')
             ->get(),
+            'relevantProducts' => Product::where('is_active', true)->latest()->take(50)->get(),
             'about' => \App\Models\AboutInfo::first(),
             'contact' => ContactInfo::first(),
         ]);
@@ -92,9 +93,29 @@ class HomeController extends Controller
         
         $product->load(['category', 'subcategory', 'brand']);
 
+        $relatedProducts = [];
+        if ($product->serie) {
+            $relatedProducts = Product::where('is_active', true)
+                ->where('serie', $product->serie)
+                ->where('id', '!=', $product->id)
+                ->latest()
+                ->get();
+        }
+
         return Inertia::render('ProductView', [
             'product' => $product,
+            'relatedProducts' => $relatedProducts,
             'contact' => ContactInfo::first(),
         ]);
+    }
+
+    public function getProductsBySerie($serie)
+    {
+        $products = Product::where('is_active', true)
+            ->where('serie', $serie)
+            ->latest()
+            ->get();
+            
+        return response()->json($products);
     }
 }

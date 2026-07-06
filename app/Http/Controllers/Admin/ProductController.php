@@ -36,6 +36,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
+            'serie' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:10240',
             'category_id' => 'required|exists:categories,id',
@@ -69,6 +70,7 @@ class ProductController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
+            'serie' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:10240',
             'category_id' => 'required|exists:categories,id',

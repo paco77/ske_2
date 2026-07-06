@@ -2,11 +2,12 @@ import { Head } from '@inertiajs/react';
 import Navbar from '@/Components/Navbar';
 import HeroSlider from '@/Components/HeroSlider';
 import BrandCarousel from '@/Components/BrandCarousel';
+import RelevantProducts from '@/Components/RelevantProducts';
 import CategoriesSection from '@/Components/CategoriesSection';
 import AboutSection from '@/Components/AboutSection';
 import ContactSection from '@/Components/ContactSection';
 
-export default function Home({ sliders, brands, categories, about, contact }) {
+export default function Home({ sliders, brands, categories, relevantProducts, about, contact }) {
     return (
         <div className="min-h-screen bg-gray-50 font-sans antialiased text-gray-900 scroll-smooth">
             <Head title="SKE Component | Componentes Electrónicos Industriales en México" />
@@ -17,6 +18,8 @@ export default function Home({ sliders, brands, categories, about, contact }) {
                 <HeroSlider sliders={sliders} />
 
                 <BrandCarousel brands={brands} />
+
+                <RelevantProducts products={relevantProducts} />
 
                 <CategoriesSection categories={categories} />
 
