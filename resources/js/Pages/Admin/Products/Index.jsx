@@ -103,6 +103,14 @@ export default function Index({ products, categories, subcategories, brands }) {
             )
         },
         {
+            label: 'Serie',
+            key: 'serie',
+            sortable: true,
+            render: (product) => (
+                <span className="text-xs font-bold text-gray-600 bg-gray-100 px-2 py-1 rounded">{product.serie || '---'}</span>
+            )
+        },
+        {
             label: 'Producto',
             key: 'name',
             sortable: true,
@@ -119,16 +127,20 @@ export default function Index({ products, categories, subcategories, brands }) {
             sortable: true,
             sortableKey: 'category.name',
             render: (product) => (
-                <div className="flex flex-col">
-                    <span className="text-xs font-bold text-gray-800">
-                        {product.category?.name || product.subcategory?.category?.name || '---'}
-                    </span>
-                    {product.subcategory && (
-                        <span className="text-[10px] text-gray-500">
-                            ↳ {product.subcategory.name}
-                        </span>
-                    )}
-                </div>
+                <span className="text-xs font-bold text-gray-800">
+                    {product.category?.name || product.subcategory?.category?.name || '---'}
+                </span>
+            )
+        },
+        {
+            label: 'Subcategoría',
+            key: 'subcategory.name',
+            sortable: true,
+            sortableKey: 'subcategory.name',
+            render: (product) => (
+                <span className="text-xs text-gray-600">
+                    {product.subcategory?.name || '---'}
+                </span>
             )
         },
         {
@@ -201,6 +213,16 @@ export default function Index({ products, categories, subcategories, brands }) {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                     <div className="space-y-6">
                                         <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Serie</label>
+                                            <input
+                                                type="text"
+                                                value={data.serie}
+                                                onChange={(e) => setData('serie', e.target.value)}
+                                                className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
+                                            />
+                                            {errors.serie && <div className="text-red-500 text-xs mt-1">{errors.serie}</div>}
+                                        </div>
+                                        <div>
                                             <label className="block text-sm font-bold text-gray-700 mb-2">Nombre del Producto</label>
                                             <input
                                                 type="text"
@@ -211,16 +233,7 @@ export default function Index({ products, categories, subcategories, brands }) {
                                             />
                                             {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
                                         </div>
-                                        <div>
-                                            <label className="block text-sm font-bold text-gray-700 mb-2">Serie</label>
-                                            <input
-                                                type="text"
-                                                value={data.serie}
-                                                onChange={(e) => setData('serie', e.target.value)}
-                                                className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
-                                            />
-                                            {errors.serie && <div className="text-red-500 text-xs mt-1">{errors.serie}</div>}
-                                        </div>
+
                                         <div>
                                             <label className="block text-sm font-bold text-gray-700 mb-2">Descripción</label>
                                             <textarea
