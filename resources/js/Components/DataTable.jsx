@@ -4,7 +4,8 @@ export default function DataTable({
     data,
     columns,
     searchPlaceholder = "Buscar...",
-    emptyMessage = "No se encontraron resultados."
+    emptyMessage = "No se encontraron resultados.",
+    selectedRowId = null
 }) {
     const [search, setSearch] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
@@ -129,10 +130,17 @@ export default function DataTable({
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {paginatedData.map((item, index) => (
-                                <tr key={item.id || index} className="hover:bg-gray-50/50 transition-colors">
-                                    {columns.map((col) => (
-                                        <td key={col.key || col.label} className="px-6 py-4">
-                                            {col.render ? col.render(item) : col.key.split('.').reduce((obj, k) => obj?.[k], item)}
+                                <tr key={item.id || index} className={`transition-colors ${selectedRowId === item.id ? 'bg-green-50/50' : 'hover:bg-gray-50/50'}`}>
+                                    {columns.map((col, colIndex) => (
+                                        <td key={col.key || col.label} className={`px-6 py-4 ${selectedRowId === item.id && colIndex === 0 ? 'border-l-4 border-green-500' : ''}`}>
+                                            <div className={selectedRowId === item.id && colIndex === 1 ? "flex items-center gap-2" : ""}>
+                                                {selectedRowId === item.id && colIndex === 1 && (
+                                                    <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                                )}
+                                                <div className={selectedRowId === item.id && colIndex === 1 ? "flex-1" : ""}>
+                                                    {col.render ? col.render(item) : col.key.split('.').reduce((obj, k) => obj?.[k], item)}
+                                                </div>
+                                            </div>
                                         </td>
                                     ))}
                                 </tr>

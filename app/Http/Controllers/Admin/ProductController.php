@@ -133,6 +133,18 @@ class ProductController extends Controller
         return redirect()->back()->with('success', 'Producto eliminado.');
     }
 
+    public function generateSeries()
+    {
+        $products = Product::all();
+        foreach ($products as $product) {
+            if (preg_match('/^[^0-9\-]+/', $product->name, $matches)) {
+                $serie = trim($matches[0]);
+                $product->update(['serie' => $serie]);
+            }
+        }
+        return redirect()->back()->with('success', 'Series generadas correctamente.');
+    }
+
     protected function updateSeoKeywords($keywords)
     {
         if (empty(trim((string)$keywords))) {

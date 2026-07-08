@@ -5,6 +5,7 @@ import { useState } from 'react';
 export default function Index({ categories }) {
     const [isAdding, setIsAdding] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
+    const [lastEditedCategoryId, setLastEditedCategoryId] = useState(null);
     const [isAddingSub, setIsAddingSub] = useState(false);
     const [selectedCatForSub, setSelectedCatForSub] = useState(null);
     const [catImagePreview, setCatImagePreview] = useState(null);
@@ -84,6 +85,7 @@ export default function Index({ categories }) {
                     <button
                         onClick={() => {
                             setEditingCategory(null);
+                            setLastEditedCategoryId(null);
                             setCatImagePreview(null);
                             categoryForm.reset();
                             setIsAdding(!isAdding);
@@ -261,12 +263,17 @@ export default function Index({ categories }) {
 
                     <div className="space-y-6">
                         {categories.map((category) => (
-                            <div key={category.id} className="overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-gray-200">
-                                <div className="flex items-center justify-between bg-gray-50/50 p-6 border-b border-gray-100">
+                            <div key={category.id} className={`overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ${lastEditedCategoryId === category.id ? 'ring-green-500 border-2 border-green-500' : 'ring-gray-200'}`}>
+                                <div className={`flex items-center justify-between p-6 border-b border-gray-100 ${lastEditedCategoryId === category.id ? 'bg-green-50/30' : 'bg-gray-50/50'}`}>
                                     <div className="flex items-center space-x-4">
                                         <img src={`${window.storageUrl}${category.image}`} className="h-12 w-16 object-cover rounded-lg" alt="" />
                                         <div>
-                                            <h3 className="text-xl font-black text-gray-900">{category.name}</h3>
+                                            <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                                                {category.name}
+                                                {lastEditedCategoryId === category.id && (
+                                                    <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                                                )}
+                                            </h3>
                                             <p className="text-xs text-gray-500">{category.subcategories?.length || 0} subcategorías</p>
                                         </div>
                                     </div>
@@ -285,6 +292,7 @@ export default function Index({ categories }) {
                                         <button
                                             onClick={() => {
                                                 setEditingCategory(category);
+                                                setLastEditedCategoryId(category.id);
                                                 categoryForm.setData({
                                                     name: category.name,
                                                     image: null,

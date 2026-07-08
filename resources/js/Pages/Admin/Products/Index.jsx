@@ -1,11 +1,12 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, router } from '@inertiajs/react';
 import { useState, useMemo } from 'react';
 import DataTable from '@/Components/DataTable';
 
 export default function Index({ products, categories, subcategories, brands }) {
     const [isAdding, setIsAdding] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
+    const [lastEditedProductId, setLastEditedProductId] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
     const [galleryPreviews, setGalleryPreviews] = useState([]);
 
@@ -56,6 +57,7 @@ export default function Index({ products, categories, subcategories, brands }) {
 
     const handleEdit = (product) => {
         setEditingProduct(product);
+        setLastEditedProductId(product.id);
         setData({
             name: product.name,
             serie: product.serie || '',
@@ -159,18 +161,33 @@ export default function Index({ products, categories, subcategories, brands }) {
                     <h2 className="text-xl font-bold leading-tight text-gray-800">
                         Gestionar Catálogo de Productos
                     </h2>
-                    <button
-                        onClick={() => {
-                            setEditingProduct(null);
-                            setImagePreview(null);
-                            setGalleryPreviews([]);
-                            reset();
-                            setIsAdding(!isAdding);
-                        }}
-                        className="rounded-full bg-gray-900 px-6 py-2 text-sm font-bold text-white transition-all hover:bg-black"
-                    >
-                        {isAdding ? 'Cancelar' : 'Nuevo Producto'}
-                    </button>
+                    <div className="flex items-center space-x-4">
+                        <button
+                            onClick={() => {
+                                if (confirm('¿Estás seguro de que deseas generar las series de todos los productos basándose en sus nombres? Esto sobrescribirá las series existentes.')) {
+                                    router.post(route('admin.products.generate-series'), {}, {
+                                        preserveScroll: true
+                                    });
+                                }
+                            }}
+                            className="rounded-full bg-blue-600 px-6 py-2 text-sm font-bold text-white transition-all hover:bg-blue-700"
+                        >
+                            Generar Series
+                        </button>
+                        <button
+                            onClick={() => {
+                                setEditingProduct(null);
+                                setLastEditedProductId(null);
+                                setImagePreview(null);
+                                setGalleryPreviews([]);
+                                reset();
+                                setIsAdding(!isAdding);
+                            }}
+                            className="rounded-full bg-gray-900 px-6 py-2 text-sm font-bold text-white transition-all hover:bg-black"
+                        >
+                            {isAdding ? 'Cancelar' : 'Nuevo Producto'}
+                        </button>
+                    </div>
                 </div>
             }
         >
@@ -383,6 +400,7 @@ export default function Index({ products, categories, subcategories, brands }) {
                         data={products}
                         columns={columns}
                         emptyMessage="No hay productos registrados."
+                        selectedRowId={lastEditedProductId}
                     />
                 </div>
             </div>

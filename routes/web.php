@@ -49,6 +49,7 @@ Route::middleware(['auth', 'verified'])->prefix('admin')->name('admin.')->group(
     Route::delete('/subcategorias/{subcategory}', [CategoryController::class , 'destroySubcategory'])->name('subcategories.destroy');
 
     // Products
+    Route::post('/productos/generar-series', [ProductController::class , 'generateSeries'])->name('products.generate-series');
     Route::get('/productos', [ProductController::class , 'index'])->name('products.index');
     Route::post('/productos', [ProductController::class , 'store'])->name('products.store');
     Route::post('/productos/{product}', [ProductController::class , 'update'])->name('products.update');
