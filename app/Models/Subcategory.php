@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subcategory extends Model
 {
-    protected $fillable = ['name', 'image', 'category_id', 'order', 'is_active'];
+    protected $fillable = ['name', 'seo_keywords', 'image', 'category_id', 'order', 'is_active'];
 
     protected $casts = [
         'is_active' => 'boolean',

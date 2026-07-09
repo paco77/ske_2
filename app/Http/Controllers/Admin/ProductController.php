@@ -45,10 +45,16 @@ class ProductController extends Controller
             'is_active' => 'boolean',
             'images' => 'nullable|array',
             'images.*' => 'image|max:10240',
+            'seo_keywords' => 'nullable|string',
+            'technical_sheet' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         if ($request->hasFile('image')) {
             $data['image'] = $this->imageService->store($request->file('image'), 'products', 800, 800);
+        }
+
+        if ($request->hasFile('technical_sheet')) {
+            $data['technical_sheet'] = $request->file('technical_sheet')->store('products/sheets', 'public');
         }
 
         $imagePaths = [];
@@ -81,6 +87,8 @@ class ProductController extends Controller
             'images.*' => 'image|max:10240',
             'kept_images' => 'nullable|array',
             'kept_images.*' => 'string',
+            'seo_keywords' => 'nullable|string',
+            'technical_sheet' => 'nullable|file|mimes:pdf|max:10240',
         ]);
 
         if ($request->hasFile('image')) {
@@ -91,6 +99,15 @@ class ProductController extends Controller
         }
         else {
             $data['image'] = $product->image;
+        }
+
+        if ($request->hasFile('technical_sheet')) {
+            if ($product->technical_sheet) {
+                Storage::disk('public')->delete($product->technical_sheet);
+            }
+            $data['technical_sheet'] = $request->file('technical_sheet')->store('products/sheets', 'public');
+        } else {
+            $data['technical_sheet'] = $product->technical_sheet;
         }
 
         $existingImages = $product->images ?? [];
@@ -122,6 +139,9 @@ class ProductController extends Controller
     {
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
+        }
+        if ($product->technical_sheet) {
+            Storage::disk('public')->delete($product->technical_sheet);
         }
         if ($product->images) {
             foreach ((array)$product->images as $image) {

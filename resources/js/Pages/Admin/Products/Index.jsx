@@ -21,6 +21,7 @@ export default function Index({ products, categories, subcategories, brands }) {
         subcategory_id: '',
         brand_id: '',
         seo_keywords: '',
+        technical_sheet: null,
         is_active: true,
         _method: 'POST',
     });
@@ -68,7 +69,8 @@ export default function Index({ products, categories, subcategories, brands }) {
             category_id: product.category_id || (product.subcategory?.category_id || ''),
             subcategory_id: product.subcategory_id || '',
             brand_id: product.brand_id || '',
-            seo_keywords: '',
+            seo_keywords: product.seo_keywords || '',
+            technical_sheet: null,
             is_active: !!product.is_active,
             _method: 'POST',
         });
@@ -151,6 +153,22 @@ export default function Index({ products, categories, subcategories, brands }) {
                 <span className="rounded bg-gray-50 px-2 py-1 text-[10px] font-black uppercase text-gray-900">
                     {product.brand?.name || '---'}
                 </span>
+            )
+        },
+        {
+            label: 'Ficha Técnica',
+            key: 'technical_sheet',
+            sortable: false,
+            render: (product) => (
+                product.technical_sheet ? (
+                    <span className="inline-flex items-center rounded bg-green-50 px-2 py-1 text-[10px] font-bold text-green-700 ring-1 ring-inset ring-green-600/20">
+                        Sí
+                    </span>
+                ) : (
+                    <span className="inline-flex items-center rounded bg-gray-50 px-2 py-1 text-[10px] font-bold text-gray-600 ring-1 ring-inset ring-gray-500/10">
+                        No
+                    </span>
+                )
             )
         },
         {
@@ -254,6 +272,23 @@ export default function Index({ products, categories, subcategories, brands }) {
                                                 className="w-full rounded-xl border-gray-200 focus:ring-gray-800 focus:border-gray-800"
                                             />
                                             <p className="text-xs text-gray-500 mt-1">Estas palabras se agregarán automáticamente a la configuración global de SEO.</p>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-bold text-gray-700 mb-2">Ficha Técnica (PDF)</label>
+                                            <div className="flex items-center gap-4">
+                                                <input
+                                                    type="file"
+                                                    accept=".pdf"
+                                                    onChange={(e) => setData('technical_sheet', e.target.files[0])}
+                                                    className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-gray-50 file:text-black hover:file:bg-gray-100"
+                                                />
+                                            </div>
+                                            {editingProduct?.technical_sheet && (
+                                                <a href={`${window.storageUrl}${editingProduct.technical_sheet}`} target="_blank" rel="noreferrer" className="text-xs text-blue-600 hover:underline mt-1 inline-block">
+                                                    Ver PDF actual
+                                                </a>
+                                            )}
+                                            {errors.technical_sheet && <div className="text-red-500 text-xs mt-1">{errors.technical_sheet}</div>}
                                         </div>
                                     </div>
                                     <div className="space-y-6">

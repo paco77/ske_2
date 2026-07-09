@@ -1,8 +1,9 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from '@inertiajs/react';
 
 export default function RelevantProducts({ products }) {
     const scrollRef = useRef(null);
+    const [selectedPdf, setSelectedPdf] = useState(null);
 
     if (!products || products.length === 0) return null;
 
@@ -30,7 +31,7 @@ export default function RelevantProducts({ products }) {
             </div>
 
             {/* Left Button */}
-            <button 
+            <button
                 onClick={slideLeft}
                 className="absolute left-4 top-1/2 mt-10 z-10 p-3 bg-white/80 backdrop-blur rounded-full shadow-lg border border-gray-100 text-gray-800 hover:bg-gray-900 hover:text-white transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0"
             >
@@ -38,7 +39,7 @@ export default function RelevantProducts({ products }) {
             </button>
 
             {/* Right Button */}
-            <button 
+            <button
                 onClick={slideRight}
                 className="absolute right-4 top-1/2 mt-10 z-10 p-3 bg-white/80 backdrop-blur rounded-full shadow-lg border border-gray-100 text-gray-800 hover:bg-gray-900 hover:text-white transition-all opacity-0 group-hover:opacity-100 disabled:opacity-0"
             >
@@ -46,7 +47,7 @@ export default function RelevantProducts({ products }) {
             </button>
 
             <div className="container mx-auto px-6">
-                <div 
+                <div
                     ref={scrollRef}
                     className="flex gap-4 overflow-x-hidden py-4 snap-x snap-mandatory"
                     style={{ scrollBehavior: 'smooth' }}
@@ -77,10 +78,32 @@ export default function RelevantProducts({ products }) {
                                     Serie: {product.serie}
                                 </span>
                             )}
+
+
                         </Link>
                     ))}
                 </div>
             </div>
+
+            {selectedPdf && (
+                <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6" onClick={() => setSelectedPdf(null)}>
+                    <div className="bg-white w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                            <h3 className="font-bold text-lg text-gray-900">Ficha Técnica - {selectedPdf.name}</h3>
+                            <button onClick={() => setSelectedPdf(null)} className="rounded-full p-2 bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div className="flex-1 bg-gray-100 relative">
+                            <iframe
+                                src={`${window.storageUrl}${selectedPdf.technical_sheet}#view=FitH`}
+                                className="w-full h-full border-none"
+                                title={`Ficha Técnica ${selectedPdf.name}`}
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
         </section>
     );
 }

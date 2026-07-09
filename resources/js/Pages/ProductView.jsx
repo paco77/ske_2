@@ -6,6 +6,9 @@ import ContactSection from '@/Components/ContactSection';
 export default function ProductView({ product, relatedProducts = [], contact }) {
     const images = [product.image, ...(product.images || [])].filter(Boolean);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [showPdf, setShowPdf] = useState(false);
+    const [selectedPdfUrl, setSelectedPdfUrl] = useState(null);
+    const [selectedPdfName, setSelectedPdfName] = useState(null);
     const scrollRef = useRef(null);
 
     const slideLeft = () => {
@@ -117,6 +120,22 @@ export default function ProductView({ product, relatedProducts = [], contact }) 
                                     {product.description}
                                 </div>
 
+                                {product.technical_sheet && (
+                                    <div className="mb-10">
+                                        <button
+                                            onClick={() => {
+                                                setSelectedPdfUrl(product.technical_sheet);
+                                                setSelectedPdfName(product.name);
+                                                setShowPdf(true);
+                                            }}
+                                            className="inline-flex items-center rounded-xl bg-gray-900 px-6 py-3 text-sm font-bold text-white transition-all hover:bg-gray-800"
+                                        >
+                                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                            Ver Ficha Técnica
+                                        </button>
+                                    </div>
+                                )}
+
                                 <div className="mt-auto">
                                     {contact && (
                                         <a
@@ -187,6 +206,21 @@ export default function ProductView({ product, relatedProducts = [], contact }) 
                                                 <h4 className="text-sm font-bold text-gray-900 truncate w-full text-center">
                                                     {related.name}
                                                 </h4>
+                                                {related.technical_sheet && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            setSelectedPdfUrl(related.technical_sheet);
+                                                            setSelectedPdfName(related.name);
+                                                            setShowPdf(true);
+                                                        }}
+                                                        className="mt-3 flex w-full items-center justify-center rounded-xl bg-gray-900 py-2 text-xs font-bold text-white transition-all hover:bg-gray-800"
+                                                    >
+                                                        <svg className="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                                        Ficha Técnica
+                                                    </button>
+                                                )}
                                             </Link>
                                         ))}
                                     </div>
@@ -195,6 +229,26 @@ export default function ProductView({ product, relatedProducts = [], contact }) 
                     </div>
                 </div>
             </main>
+
+            {showPdf && selectedPdfUrl && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6" onClick={() => setShowPdf(false)}>
+                    <div className="bg-white w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                            <h3 className="font-bold text-lg text-gray-900">Ficha Técnica - {selectedPdfName}</h3>
+                            <button onClick={() => setShowPdf(false)} className="rounded-full p-2 bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div className="flex-1 bg-gray-100 relative">
+                            <iframe 
+                                src={`${window.storageUrl}${selectedPdfUrl}#view=FitH`} 
+                                className="w-full h-full border-none"
+                                title={`Ficha Técnica ${selectedPdfName}`}
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             <ContactSection contact={contact} />
         </div>

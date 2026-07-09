@@ -274,7 +274,14 @@ export default function Index({ categories }) {
                                                     <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
                                                 )}
                                             </h3>
-                                            <p className="text-xs text-gray-500">{category.subcategories?.length || 0} subcategorías</p>
+                                            <div className="flex items-center gap-3">
+                                                <p className="text-xs text-gray-500">{category.subcategories?.length || 0} subcategorías</p>
+                                                {category.seo_keywords ? (
+                                                    <span className="inline-flex items-center rounded bg-green-50 px-2 py-0.5 text-[10px] font-bold text-green-700 ring-1 ring-inset ring-green-600/20">SEO ✓</span>
+                                                ) : (
+                                                    <span className="inline-flex items-center rounded bg-gray-50 px-2 py-0.5 text-[10px] font-bold text-gray-600 ring-1 ring-inset ring-gray-500/10">Sin SEO</span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex items-center space-x-4">
@@ -297,7 +304,7 @@ export default function Index({ categories }) {
                                                     name: category.name,
                                                     image: null,
                                                     order: category.order,
-                                                    seo_keywords: '',
+                                                    seo_keywords: category.seo_keywords || '',
                                                     is_active: !!category.is_active,
                                                     _method: 'POST',
                                                 });
@@ -326,6 +333,9 @@ export default function Index({ categories }) {
                                                         {sub.image && <img src={`${window.storageUrl}${sub.image}`} className="object-contain h-full w-full" />}
                                                     </div>
                                                     <span className="font-bold text-gray-700">{sub.name}</span>
+                                                    {sub.seo_keywords && (
+                                                        <span className="ml-2 inline-flex items-center rounded bg-green-50 px-1.5 py-0.5 text-[9px] font-bold text-green-700 ring-1 ring-inset ring-green-600/20">SEO ✓</span>
+                                                    )}
                                                 </div>
                                                 <button
                                                     onClick={() => handleDeleteSubcategory(sub.id)}

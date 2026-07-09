@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, usePage } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ApplicationLogo from '@/Components/ApplicationLogo';
@@ -14,6 +14,7 @@ export default function Navbar() {
 
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [showPdf, setShowPdf] = useState(false);
     const [modalImageIndex, setModalImageIndex] = useState(0);
 
     const openModal = (product) => {
@@ -26,6 +27,22 @@ export default function Navbar() {
     const closeModal = () => {
         setIsModalOpen(false);
         setTimeout(() => setSelectedProduct(null), 200);
+    };
+
+    const relatedScrollRef = useRef(null);
+    const slideRelatedLeft = () => {
+        if (relatedScrollRef.current) {
+            relatedScrollRef.current.scrollBy({ left: -relatedScrollRef.current.clientWidth, behavior: 'smooth' });
+        }
+    };
+    const slideRelatedRight = () => {
+        if (relatedScrollRef.current) {
+            relatedScrollRef.current.scrollBy({ left: relatedScrollRef.current.clientWidth, behavior: 'smooth' });
+        }
+    };
+
+    const closePdf = () => {
+        setShowPdf(false);
     };
 
     const toggleMobileMenu = (name) => {
@@ -275,18 +292,23 @@ export default function Navbar() {
         </nav>
 
             <Modal show={isModalOpen} onClose={closeModal} maxWidth="3xl">
-                {selectedProduct && (
-                    <div className="relative p-6 sm:p-10 flex flex-col md:flex-row gap-8 bg-white min-h-[600px]">
+                {selectedProduct && (() => {
+                    const relatedProducts = selectedProduct.serie 
+                        ? global_products.filter(p => p.serie === selectedProduct.serie && p.id !== selectedProduct.id)
+                        : [];
+                    return (
+                    <div className="relative p-6 sm:p-10 bg-white min-h-[600px] max-h-[90vh] overflow-y-auto overflow-x-hidden">
                         <button
                             onClick={closeModal}
-                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors"
+                            className="absolute top-4 right-4 text-gray-400 hover:text-gray-900 transition-colors z-10"
                         >
                             <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                         
-                        <div className="md:w-1/2 flex items-center justify-center bg-gray-50 rounded-2xl p-6 relative group">
+                        <div className="flex flex-col md:flex-row gap-8">
+                            <div className="md:w-1/2 flex items-center justify-center bg-gray-50 rounded-2xl p-6 relative group">
                             {(() => {
                                 const modalImages = [selectedProduct.image, ...(selectedProduct.images || [])].filter(Boolean);
                                 return (
@@ -332,6 +354,19 @@ export default function Navbar() {
                             <div className="prose prose-sm text-gray-600 mb-8 whitespace-pre-wrap">
                                 {selectedProduct.description}
                             </div>
+                            
+                            {selectedProduct.technical_sheet && (
+                                <div className="mb-6">
+                                    <button
+                                        onClick={() => setShowPdf(true)}
+                                        className="inline-flex items-center rounded-xl bg-gray-900 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-gray-800"
+                                    >
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                                        Ver Ficha Técnica
+                                    </button>
+                                </div>
+                            )}
+
                             <div className="mt-auto">
                                 <a
                                     href={`https://wa.me/${global_contact?.whatsapp}?text=Hola, me interesa el producto: ${selectedProduct.name}`}
@@ -346,9 +381,62 @@ export default function Navbar() {
                                 </a>
                             </div>
                         </div>
+                        </div>
+
+                        {relatedProducts.length > 0 && (
+                            <div className="mt-12 pt-8 border-t border-gray-100 relative group">
+                                <h4 className="text-lg font-bold text-gray-900 mb-6 text-center">Más productos de la Serie {selectedProduct.serie}</h4>
+                                <button onClick={slideRelatedLeft} className="absolute left-0 top-[60%] z-10 p-2 bg-white/90 rounded-full shadow-lg border border-gray-100 text-gray-800 hover:bg-gray-900 hover:text-white opacity-0 group-hover:opacity-100 transition-all -translate-y-1/2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                                </button>
+                                <button onClick={slideRelatedRight} className="absolute right-0 top-[60%] z-10 p-2 bg-white/90 rounded-full shadow-lg border border-gray-100 text-gray-800 hover:bg-gray-900 hover:text-white opacity-0 group-hover:opacity-100 transition-all -translate-y-1/2">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                                </button>
+                                
+                                <div ref={relatedScrollRef} className="flex space-x-4 overflow-x-hidden py-2 px-1" style={{ scrollBehavior: 'smooth' }}>
+                                    {relatedProducts.map(related => (
+                                        <button
+                                            key={related.id}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                setSelectedProduct(related);
+                                                setModalImageIndex(0);
+                                                if (relatedScrollRef.current) relatedScrollRef.current.scrollTo({ left: 0 });
+                                            }}
+                                            className="flex flex-col items-center justify-center w-40 p-3 border border-gray-100 rounded-2xl shadow-sm bg-white shrink-0 hover:shadow-lg transition-all"
+                                        >
+                                            <div className="h-24 w-full mb-3 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50">
+                                                <img src={`${window.storageUrl}${related.image}`} className="max-h-full max-w-full object-contain" onError={(e) => (e.target.src = 'https://via.placeholder.com/150')} />
+                                            </div>
+                                            <h5 className="text-xs font-bold text-gray-900 truncate w-full text-center">{related.name}</h5>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                )}
+                )})}
             </Modal>
+
+            {showPdf && selectedProduct?.technical_sheet && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-6" onClick={closePdf}>
+                    <div className="bg-white w-full max-w-5xl h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden" onClick={e => e.stopPropagation()}>
+                        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                            <h3 className="font-bold text-lg text-gray-900">Ficha Técnica - {selectedProduct.name}</h3>
+                            <button onClick={closePdf} className="rounded-full p-2 bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                            </button>
+                        </div>
+                        <div className="flex-1 bg-gray-100 relative">
+                            <iframe 
+                                src={`${window.storageUrl}${selectedProduct.technical_sheet}#view=FitH`} 
+                                className="w-full h-full border-none"
+                                title={`Ficha Técnica ${selectedProduct.name}`}
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
