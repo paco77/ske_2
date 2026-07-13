@@ -96,7 +96,7 @@ export default function RelevantProducts({ products }) {
                         </div>
                         <div className="flex-1 bg-gray-100 relative">
                             <iframe
-                                src={`${window.storageUrl}${selectedPdf.technical_sheet}#view=FitH`}
+                                src={`/pdfjs/web/viewer.html?file=${encodeURIComponent('/storage/' + selectedPdf.technical_sheet)}#zoom=page-fit`}
                                 className="w-full h-full border-none"
                                 title={`Ficha Técnica ${selectedPdf.name}`}
                             ></iframe>

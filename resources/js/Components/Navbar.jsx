@@ -429,7 +429,7 @@ export default function Navbar() {
                         </div>
                         <div className="flex-1 bg-gray-100 relative">
                             <iframe 
-                                src={`${window.storageUrl}${selectedProduct.technical_sheet}#view=FitH`} 
+                                src={`/pdfjs/web/viewer.html?file=${encodeURIComponent('/storage/' + selectedProduct.technical_sheet)}#zoom=page-fit`} 
                                 className="w-full h-full border-none"
                                 title={`Ficha Técnica ${selectedProduct.name}`}
                             ></iframe>
