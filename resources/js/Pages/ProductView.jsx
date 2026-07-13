@@ -241,7 +241,7 @@ export default function ProductView({ product, relatedProducts = [], contact }) 
                         </div>
                         <div className="flex-1 bg-gray-100 relative">
                             <iframe 
-                                src={`/pdfjs/web/viewer.html?file=${encodeURIComponent('/storage/' + selectedPdfUrl)}#zoom=page-fit`} 
+                                src={`${window.storageUrl}${selectedPdfUrl}#view=FitH`} 
                                 className="w-full h-full border-none"
                                 title={`Ficha Técnica ${selectedPdfName}`}
                             ></iframe>

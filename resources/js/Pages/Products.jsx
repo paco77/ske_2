@@ -442,7 +442,7 @@ export default function Products({ subcategory, products, contact }) {
                         </div>
                         <div className="flex-1 bg-gray-100 relative">
                             <iframe 
-                                src={`/pdfjs/web/viewer.html?file=${encodeURIComponent('/storage/' + selectedProduct.technical_sheet)}#zoom=page-fit`} 
+                                src={`${window.storageUrl}${selectedProduct.technical_sheet}#view=FitH`} 
                                 className="w-full h-full border-none"
                                 title={`Ficha Técnica ${selectedProduct.name}`}
                             ></iframe>
