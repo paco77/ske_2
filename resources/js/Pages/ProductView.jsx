@@ -76,12 +76,21 @@ export default function ProductView({ product, relatedProducts = [], contact }) 
 
                     <div className="bg-white rounded-3xl shadow-sm p-6 sm:p-10">
                         <div className="flex flex-col md:flex-row gap-12">
-                            <div className="md:w-1/2 flex items-center justify-center bg-gray-50 rounded-2xl p-6 relative group">
+                            <div 
+                                className="md:w-1/2 flex items-center justify-center bg-gray-50 rounded-2xl p-6 relative group overflow-hidden cursor-zoom-in"
+                                onMouseMove={(e) => {
+                                    const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                                    const x = ((e.clientX - left) / width) * 100;
+                                    const y = ((e.clientY - top) / height) * 100;
+                                    e.currentTarget.style.setProperty('--mouse-x', `${x}%`);
+                                    e.currentTarget.style.setProperty('--mouse-y', `${y}%`);
+                                }}
+                            >
                                 {images.length > 0 && (
                                     <img
                                         src={`${window.storageUrl}${images[currentImageIndex]}`}
                                         alt={product.name}
-                                        className="max-h-[500px] w-auto object-contain transition-all"
+                                        className="max-h-[500px] w-auto object-contain transition-transform duration-200 ease-out group-hover:scale-[2] group-hover:origin-[var(--mouse-x,50%)_var(--mouse-y,50%)]"
                                         onError={(e) => (e.target.src = 'https://via.placeholder.com/600?text=' + product.name)}
                                     />
                                 )}

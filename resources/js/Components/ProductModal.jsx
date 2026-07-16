@@ -65,11 +65,20 @@ export default function ProductModal({ isOpen, onClose, product }) {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-                                    <div className="bg-gray-50 p-8 flex items-center justify-center min-h-[300px]">
+                                    <div 
+                                        className="bg-gray-50 p-8 flex items-center justify-center min-h-[300px] relative overflow-hidden group cursor-zoom-in"
+                                        onMouseMove={(e) => {
+                                            const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+                                            const x = ((e.clientX - left) / width) * 100;
+                                            const y = ((e.clientY - top) / height) * 100;
+                                            e.currentTarget.style.setProperty('--mouse-x', `${x}%`);
+                                            e.currentTarget.style.setProperty('--mouse-y', `${y}%`);
+                                        }}
+                                    >
                                         <img
                                             src={`${window.storageUrl}${product.image}`}
                                             alt={product.name}
-                                            className="max-h-80 w-auto object-contain mix-blend-multiply"
+                                            className="max-h-80 w-auto object-contain mix-blend-multiply transition-transform duration-200 ease-out group-hover:scale-[2] group-hover:origin-[var(--mouse-x,50%)_var(--mouse-y,50%)]"
                                             onError={(e) => {
                                                 if (!e.target.src.includes('via.placeholder.com')) {
                                                     e.target.src = 'https://via.placeholder.com/400?text=' + encodeURIComponent(product.name);
